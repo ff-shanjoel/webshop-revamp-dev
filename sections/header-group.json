@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "name": "t:sections.header.name",
   "type": "header",
@@ -34,30 +25,12 @@
             "icon": "shield",
             "text": "Up to 5-year warranty on entrance systems"
           }
-        },
-        "feat-logo": {
-          "type": "mega_feature",
-          "settings": {
-            "menu_item": "Logo Mats",
-            "label": "Best seller",
-            "product": "copy-of-indoor-outdoor-image-logo-mats"
-          }
-        },
-        "feat-entrance": {
-          "type": "mega_feature",
-          "settings": {
-            "menu_item": "Entrance Matting",
-            "label": "Best seller",
-            "product": "munster-clare-for-recess"
-          }
         }
       },
       "block_order": [
         "msg-delivery",
         "msg-vat",
-        "msg-warranty",
-        "feat-logo",
-        "feat-entrance"
+        "msg-warranty"
       ],
       "settings": {
         "logo_width": 170,
@@ -69,9 +42,8 @@
         "phone": "(085) 1234 899",
         "email": "info@facilityflooring.ie",
         "menu": "main-menu",
-        "view_all_label": "View all",
-        "help_heading": "Need help choosing?",
-        "help_text": "Our specialists will measure, advise and quote — usually the same day."
+        "view_all_label": "Shop all",
+        "help_heading": "Need help choosing? Call our specialists"
       }
     }
   },

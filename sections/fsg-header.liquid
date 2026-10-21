@@ -187,7 +187,6 @@
 
   {%- comment -%} Category bar + mega menu {%- endcomment -%}
   {%- if menu != blank -%}
-    {%- assign features = section.blocks | where: 'type', 'mega_feature' -%}
     <nav class="fsg-cats" aria-label="{{ menu.title | escape }}">
       <div class="fsg-wrap">
         <ul class="fsg-cats__list" role="list">
@@ -220,83 +219,88 @@
               </a>
 
               {%- if has_mega -%}
+                {%- liquid
+                  assign has_l3 = false
+                  for child in link.links
+                    if child.links.size > 0
+                      assign has_l3 = true
+                      break
+                    endif
+                  endfor
+                -%}
                 <div class="fsg-mega">
                   <div class="fsg-wrap fsg-mega__inner">
-                    <div class="fsg-mega__cols">
-                      {%- for child in link.links -%}
-                        <div class="fsg-mega__col">
-                          <a href="{{ child.url }}" class="fsg-mega__heading">{{ child.title | escape }}</a>
-                          {%- if child.links.size > 0 -%}
-                            <ul class="fsg-mega__links" role="list">
-                              {%- for grandchild in child.links -%}
-                                <li>
-                                  <a href="{{ grandchild.url }}">{{ grandchild.title | escape }}</a>
-                                </li>
-                              {%- endfor -%}
-                            </ul>
-                          {%- endif -%}
+                    {%- if has_l3 -%}
+                      {%- comment -%} 3-level menu: subcategory list on the left, its ranges on the right {%- endcomment -%}
+                      <div class="fsg-mega__split" data-fsg-split>
+                        <ul class="fsg-mega__nav" role="list">
+                          {%- for child in link.links -%}
+                            <li>
+                              <a
+                                href="{{ child.url }}"
+                                class="fsg-mega__nav-link{% if forloop.first %} is-active{% endif %}"
+                                data-fsg-pane="{{ forloop.index0 }}"
+                              >
+                                {{- child.title | escape -}}
+                                {%- if child.links.size > 0 -%}
+                                  {% render 'fsg-icon', icon: 'chevron-right', size: 16 %}
+                                {%- endif -%}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                        <div class="fsg-mega__panes">
+                          {%- for child in link.links -%}
+                            <div class="fsg-mega__pane{% if forloop.first %} is-active{% endif %}" data-fsg-panel="{{ forloop.index0 }}">
+                              <div class="fsg-mega__head">
+                                <strong>{{ child.title | escape }}</strong>
+                                <a href="{{ child.url }}" class="fsg-mega__all">
+                                  {{- section.settings.view_all_label }}
+                                  {% render 'fsg-icon', icon: 'arrow-right', size: 15 -%}
+                                </a>
+                              </div>
+                              <ul class="fsg-mega__tiles" role="list">
+                                {%- if child.links.size > 0 -%}
+                                  {%- for grandchild in child.links -%}
+                                    <li>{% render 'fsg-mega-tile', link: grandchild %}</li>
+                                  {%- endfor -%}
+                                {%- else -%}
+                                  <li>{% render 'fsg-mega-tile', link: child %}</li>
+                                {%- endif -%}
+                              </ul>
+                            </div>
+                          {%- endfor -%}
                         </div>
-                      {%- endfor -%}
-                      <div class="fsg-mega__col">
+                      </div>
+                    {%- else -%}
+                      {%- comment -%} 2-level menu: every subcategory as a photo tile {%- endcomment -%}
+                      <div class="fsg-mega__head">
+                        <strong>{{ link.title | escape }}</strong>
                         <a href="{{ link.url }}" class="fsg-mega__all">
                           {{- section.settings.view_all_label }}
-                          {{ link.title | escape -}}
-                          {% render 'fsg-icon', icon: 'arrow-right', size: 15 %}
+                          {% render 'fsg-icon', icon: 'arrow-right', size: 15 -%}
                         </a>
                       </div>
-                    </div>
-
-                    <aside class="fsg-mega__side">
-                      {%- liquid
-                        assign feature = null
-                        assign link_title = link.title | downcase | strip
-                        for block in features
-                          assign match = block.settings.menu_item | downcase | strip
-                          if match == link_title
-                            assign feature = block
-                            break
-                          endif
-                        endfor
-                      -%}
-                      {%- if feature and feature.settings.product != blank -%}
-                        {%- assign fp = feature.settings.product -%}
-                        <a href="{{ fp.url }}" class="fsg-mega__feature" {{ feature.shopify_attributes }}>
-                          <span class="fsg-mega__feature-media">
-                            {%- if fp.featured_image -%}
-                              {{
-                                fp.featured_image
-                                | image_url: width: 240
-                                | image_tag: loading: 'lazy', widths: '120, 240', sizes: '96px', alt: fp.title
-                              }}
-                            {%- endif -%}
-                          </span>
-                          <span>
-                            <small>{{ feature.settings.label | default: 'Featured' }}</small>
-                            <strong>{{ fp.title }}</strong>
-                            <span>
-                              {%- if fp.price_varies -%}from {% endif -%}
-                              {{- fp.price_min | money -}}
-                            </span>
-                          </span>
-                        </a>
-                      {%- endif -%}
-
-                      {%- if section.settings.help_heading != blank -%}
-                        <div class="fsg-mega__help">
-                          <strong>{{ section.settings.help_heading }}</strong>
-                          {%- if section.settings.help_text != blank -%}
-                            <p>{{ section.settings.help_text }}</p>
-                          {%- endif -%}
-                          {%- if phone != blank -%}
-                            <a href="tel:{{ phone_href }}">{% render 'fsg-icon', icon: 'phone', size: 16 %} {{ phone }}</a>
-                          {%- endif -%}
-                          {%- if email != blank -%}
-                            <a href="mailto:{{ email }}">{% render 'fsg-icon', icon: 'mail', size: 16 %} {{ email }}</a>
-                          {%- endif -%}
-                        </div>
-                      {%- endif -%}
-                    </aside>
+                      <ul class="fsg-mega__tiles" role="list">
+                        {%- for child in link.links -%}
+                          <li>{% render 'fsg-mega-tile', link: child %}</li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
                   </div>
+                  {%- if section.settings.help_heading != blank and phone != blank -%}
+                    <div class="fsg-mega__foot">
+                      <div class="fsg-wrap">
+                        {% render 'fsg-icon', icon: 'chat', size: 16 %}
+                        <span>{{ section.settings.help_heading }}</span>
+                        <a href="tel:{{ phone_href }}">{{ phone }}</a>
+                        {%- if email != blank -%}
+                          <span aria-hidden="true">·</span>
+                          <a href="mailto:{{ email }}">{{ email }}</a>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  {%- endif -%}
                 </div>
               {%- endif -%}
             </li>
@@ -509,19 +513,13 @@
       "type": "text",
       "id": "view_all_label",
       "label": "View all prefix",
-      "default": "View all"
+      "default": "Shop all"
     },
     {
       "type": "text",
       "id": "help_heading",
-      "label": "Help box heading",
+      "label": "Help line in mega menu",
       "default": "Need help choosing?"
-    },
-    {
-      "type": "text",
-      "id": "help_text",
-      "label": "Help box text",
-      "default": "Our specialists will measure, advise and quote — usually the same day."
     }
   ],
   "blocks": [
@@ -555,29 +553,6 @@
           "type": "url",
           "id": "link",
           "label": "Link"
-        }
-      ]
-    },
-    {
-      "type": "mega_feature",
-      "name": "Mega menu feature",
-      "settings": [
-        {
-          "type": "text",
-          "id": "menu_item",
-          "label": "Menu item title",
-          "info": "Shows in the mega menu of the top-level item with this exact title."
-        },
-        {
-          "type": "text",
-          "id": "label",
-          "label": "Label",
-          "default": "Best seller"
-        },
-        {
-          "type": "product",
-          "id": "product",
-          "label": "Product"
         }
       ]
     }

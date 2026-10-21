@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "hero": {
@@ -55,10 +46,10 @@
         "fallback_product": "munster-clare-for-recess",
         "fallback_photo": 3,
         "image_opacity": 55,
-        "min_height": 520,
+        "min_height": 440,
         "eyebrow": "Ireland's floor specialists",
         "heading": "Entrance matting, trims and protection for every building.",
-        "text": "<p>Commercial-grade entrance systems, made-to-measure logo mats and eco floor care — supplied across Ireland by people who know floors.</p>",
+        "text": "<p>Entrance matting, logo mats, trims and eco floor care — delivered across Ireland in 2–3 working days.</p>",
         "button_label": "Shop entrance matting",
         "button_link": "shopify://collections/secondary-textile-mats-for-recess",
         "button_2_label": "Get a quote",
@@ -137,65 +128,21 @@
         "c8"
       ],
       "settings": {
-        "eyebrow": "Shop by category",
-        "heading": "Popular categories",
+        "heading": "Shop by category",
         "link_label": "All categories",
         "link": "shopify://collections",
         "columns": 4,
         "show_count": true,
         "background": "white",
-        "padding_top": 40,
+        "padding_top": 32,
         "padding_bottom": 56
-      }
-    },
-    "ranges": {
-      "type": "fsg-range-banners",
-      "blocks": {
-        "entrance": {
-          "type": "banner",
-          "settings": {
-            "fallback_product": "outdoor-aluminium-mat-pack-clean-brush-12mm",
-            "fallback_photo": 3,
-            "eyebrow": "Entrance matting",
-            "heading": "Stop dirt and water at the door.",
-            "text": "<p>Most of the dirt in a building walks in through the entrance. Our three-zone systems scrape, dry and finish, so floors inside stay clean and safe.</p>",
-            "bullets": "Aluminium, textile and modular systems\nCut to fit your matwell\nUp to 5-year warranty",
-            "button_label": "Shop entrance matting",
-            "button_link": "shopify://collections/aluminium-mats-1",
-            "button_style": "primary"
-          }
-        },
-        "logo": {
-          "type": "banner",
-          "settings": {
-            "fallback_product": "copy-of-indoor-outdoor-image-logo-mats",
-            "fallback_photo": 4,
-            "eyebrow": "Custom logo mats",
-            "heading": "Your brand, the first thing visitors see.",
-            "text": "<p>Full-colour logo mats printed to your size and colours, for indoor or outdoor entrances. We send a digital proof before production.</p>",
-            "bullets": "Digital proof before production\nAny size or shape\nIndoor and outdoor ranges",
-            "button_label": "Design your logo mat",
-            "button_link": "shopify://collections/logo-mats",
-            "button_style": "primary"
-          }
-        }
-      },
-      "block_order": [
-        "entrance",
-        "logo"
-      ],
-      "settings": {
-        "start_with_image_right": false,
-        "background": "white",
-        "padding_top": 40,
-        "padding_bottom": 64
       }
     },
     "featured": {
       "type": "fsg-featured-products",
       "settings": {
-        "eyebrow": "Best sellers",
-        "heading": "In stock and ready to ship",
+        "eyebrow": "Ready to ship",
+        "heading": "Best sellers",
         "collection": "secondary-textile-mats-for-recess",
         "limit": 8,
         "columns": 4,
@@ -205,59 +152,6 @@
         "background": "mist",
         "padding_top": 64,
         "padding_bottom": 64
-      }
-    },
-    "sectors": {
-      "type": "fsg-sectors-strip",
-      "settings": {
-        "heading": "Supplying floors across Ireland for",
-        "sectors": "Schools & colleges\nHospitals & clinics\nHotels\nRetail\nOffices\nLocal authorities\nLeisure centres\nHomes",
-        "speed": 40,
-        "padding_top": 40,
-        "padding_bottom": 40
-      }
-    },
-    "ranges_2": {
-      "type": "fsg-range-banners",
-      "blocks": {
-        "progress": {
-          "type": "banner",
-          "settings": {
-            "fallback_product": "more-information",
-            "fallback_photo": 1,
-            "eyebrow": "Progress Profiles",
-            "heading": "Exclusive Irish distributor of Progress Profiles.",
-            "text": "<p>Italian-made trims, stair nosings and movement joints for tiles, timber and resilient floors, built for a clean and durable finish.</p>",
-            "bullets": "Stair nosings and edge trims\nMovement and expansion joints\nAluminium, brass and stainless finishes",
-            "button_label": "Shop trims & profiles",
-            "button_link": "shopify://collections/trims",
-            "button_style": "outline"
-          }
-        },
-        "4earth": {
-          "type": "banner",
-          "settings": {
-            "fallback_product": "4earth-home-box",
-            "fallback_photo": 1,
-            "eyebrow": "4EarthSolutions",
-            "heading": "Eco floor care that actually works.",
-            "text": "<p>Eco cleaners, sealers and anti-slip treatments for stone, tile and timber floors.</p>",
-            "bullets": "Cleaners for everyday care\nAnti-slip treatments for wet areas\nSealers for natural stone",
-            "button_label": "Shop 4EarthSolutions",
-            "button_link": "shopify://collections/4earthsolutions",
-            "button_style": "outline"
-          }
-        }
-      },
-      "block_order": [
-        "progress",
-        "4earth"
-      ],
-      "settings": {
-        "start_with_image_right": true,
-        "background": "white",
-        "padding_top": 72,
-        "padding_bottom": 40
       }
     },
     "help": {
@@ -270,91 +164,53 @@
         "email": "info@facilityflooring.ie",
         "fallback_product": "outdoor-aluminium-mat-pack-clean-brush-12mm",
         "fallback_photo": 7,
-        "padding_top": 56,
-        "padding_bottom": 56
+        "padding_top": 48,
+        "padding_bottom": 64
       }
     },
-    "guides": {
-      "type": "fsg-guides",
-      "settings": {
-        "eyebrow": "Guides & advice",
-        "heading": "Know before you buy",
-        "blog": "news",
-        "count": 3,
-        "read_label": "Read guide",
-        "link_label": "All guides",
-        "background": "white",
-        "padding_top": 40,
-        "padding_bottom": 56
-      }
-    },
-    "faq": {
-      "type": "fsg-faq",
+    "promos": {
+      "type": "fsg-promo-cards",
       "blocks": {
-        "q1": {
-          "type": "question",
+        "logo": {
+          "type": "card",
           "settings": {
-            "question": "How much is delivery and how long does it take?",
-            "answer": "<p>Delivery anywhere in the Republic of Ireland is €15, and most orders arrive within 2–3 working days. Made-to-measure and logo mats take longer; we confirm the lead time with your order.</p>"
+            "fallback_product": "copy-of-indoor-outdoor-image-logo-mats",
+            "fallback_photo": 4,
+            "eyebrow": "Custom logo mats",
+            "heading": "Your logo at the front door",
+            "text": "Any size, full colour, with a digital proof before production.",
+            "button_label": "Shop logo mats",
+            "link": "shopify://collections/logo-mats"
           }
         },
-        "q2": {
-          "type": "question",
+        "earth": {
+          "type": "card",
           "settings": {
-            "question": "Do your prices include VAT?",
-            "answer": "<p>Yes. All prices on the website include VAT at 23%.</p>"
-          }
-        },
-        "q3": {
-          "type": "question",
-          "settings": {
-            "question": "Can you supply mats in custom sizes?",
-            "answer": "<p>Yes. Most of our entrance matting can be cut to fit your matwell or floor area. Send us your measurements or a photo and we will quote.</p>"
-          }
-        },
-        "q4": {
-          "type": "question",
-          "settings": {
-            "question": "Do you offer volume pricing?",
-            "answer": "<p>Yes. For larger projects, multiple sites or ongoing supply, contact us for a quote.</p>"
-          }
-        },
-        "q5": {
-          "type": "question",
-          "settings": {
-            "question": "Can I return a logo mat?",
-            "answer": "<p>Logo mats are made to order, so they cannot be refunded once you have approved the proof. We send a digital proof first so you can check colours, size and wording.</p>"
+            "fallback_product": "4earth-carpet-upholstery-cleaner-1-litre",
+            "fallback_photo": 1,
+            "eyebrow": "4EarthSolutions",
+            "heading": "Eco cleaners, sealers & anti-slip",
+            "text": "Floor care for stone, tile and timber.",
+            "button_label": "Shop floor care",
+            "link": "shopify://collections/cleaning-supplies"
           }
         }
       },
       "block_order": [
-        "q1",
-        "q2",
-        "q3",
-        "q4",
-        "q5"
+        "logo",
+        "earth"
       ],
       "settings": {
-        "eyebrow": "FAQ",
-        "heading": "Questions we get asked a lot",
-        "text": "<p>Can't find your answer? Our team is happy to help.</p>",
-        "button_label": "Contact us",
-        "open_first": true,
-        "background": "mist",
-        "padding_top": 72,
-        "padding_bottom": 72
+        "padding_top": 56,
+        "padding_bottom": 8
       }
     }
   },
   "order": [
     "hero",
     "tiles",
-    "ranges",
     "featured",
-    "sectors",
-    "ranges_2",
-    "help",
-    "guides",
-    "faq"
+    "promos",
+    "help"
   ]
 }

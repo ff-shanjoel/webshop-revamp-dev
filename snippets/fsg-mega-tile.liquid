@@ -1,0 +1,34 @@
+{% comment %}
+  Photo tile for a mega menu link. Collections show their image (or first
+  product photo) and product count; other links fall back to an initial.
+
+  Accepts:
+  - link: {Object} menu link
+
+  Usage:
+  {% render 'fsg-mega-tile', link: child %}
+{% endcomment %}
+{%- liquid
+  assign img = null
+  assign count = null
+  case link.type
+    when 'collection_link'
+      assign img = link.object.image | default: link.object.products.first.featured_image
+      assign count = link.object.products_count
+    when 'product_link'
+      assign img = link.object.featured_image
+  endcase
+-%}
+<a href="{{ link.url }}" class="fsg-mtile">
+  <span class="fsg-mtile__media">
+    {%- if img != blank -%}
+      {{ img | image_url: width: 320 | image_tag: loading: 'lazy', widths: '160, 320', sizes: '160px', alt: '' }}
+    {%- else -%}
+      <span class="fsg-mtile__initial" aria-hidden="true">{{ link.title | slice: 0 }}</span>
+    {%- endif -%}
+  </span>
+  <span class="fsg-mtile__title">{{ link.title | escape }}</span>
+  {%- if count != null -%}
+    <span class="fsg-mtile__count">{{ count }} products</span>
+  {%- endif -%}
+</a>

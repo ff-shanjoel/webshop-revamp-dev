@@ -72,6 +72,20 @@
     document.addEventListener('click', (event) => {
       if (!bar.contains(event.target)) closeAll();
     });
+
+    // 3-level menus: hovering or focusing a subcategory shows its panel.
+    bar.querySelectorAll('[data-fsg-split]').forEach((split) => {
+      const links = split.querySelectorAll('[data-fsg-pane]');
+      const panels = split.querySelectorAll('[data-fsg-panel]');
+      const show = (index) => {
+        links.forEach((l) => l.classList.toggle('is-active', l.dataset.fsgPane === index));
+        panels.forEach((p) => p.classList.toggle('is-active', p.dataset.fsgPanel === index));
+      };
+      links.forEach((link) => {
+        link.addEventListener('mouseenter', () => show(link.dataset.fsgPane));
+        link.addEventListener('focus', () => show(link.dataset.fsgPane));
+      });
+    });
   }
 
   /* ---------- Mobile drawer ---------- */
