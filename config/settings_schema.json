@@ -1466,5 +1466,95 @@
         "label": "t:settings_schema.customer_accounts.settings.customer_account_menu.label"
       }
     ]
+  },
+  {
+    "name": "FSG design",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Colours"
+      },
+      {
+        "type": "color",
+        "id": "fsg_ink",
+        "label": "Ink (headings)",
+        "default": "#16222f"
+      },
+      {
+        "type": "color",
+        "id": "fsg_ink_2",
+        "label": "Body text",
+        "default": "#5b6878"
+      },
+      {
+        "type": "color",
+        "id": "fsg_ink_3",
+        "label": "Muted text",
+        "default": "#8a96a5"
+      },
+      {
+        "type": "color",
+        "id": "fsg_slate",
+        "label": "Slate",
+        "default": "#2f4a68"
+      },
+      {
+        "type": "color",
+        "id": "fsg_slate_dark",
+        "label": "Slate dark",
+        "default": "#1d3149"
+      },
+      {
+        "type": "color",
+        "id": "fsg_steel",
+        "label": "Steel",
+        "default": "#5f7d9c"
+      },
+      {
+        "type": "color",
+        "id": "fsg_accent",
+        "label": "Accent",
+        "default": "#4a78b0"
+      },
+      {
+        "type": "color",
+        "id": "fsg_mist",
+        "label": "Mist (light background)",
+        "default": "#f3f5f8"
+      },
+      {
+        "type": "color",
+        "id": "fsg_mist_2",
+        "label": "Mist 2",
+        "default": "#e7ebf0"
+      },
+      {
+        "type": "color",
+        "id": "fsg_line",
+        "label": "Lines and borders",
+        "default": "#e1e6ec"
+      },
+      {
+        "type": "header",
+        "content": "Shape and type"
+      },
+      {
+        "type": "range",
+        "id": "fsg_radius",
+        "label": "Corner radius",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "default": 8
+      },
+      {
+        "type": "checkbox",
+        "id": "fsg_use_manrope",
+        "label": "Use Manrope font",
+        "info": "Loads Manrope from Google Fonts. Untick to use the theme body font.",
+        "default": true
+      }
+    ]
   }
 ]

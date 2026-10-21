@@ -1,0 +1,211 @@
+{%- assign s = section.settings -%}
+
+<section
+  class="fsg fsg-sec fsg-ranges{% if s.background == 'mist' %} fsg-sec--mist{% endif %}"
+  style="--fsg-pt: {{ s.padding_top }}px; --fsg-pb: {{ s.padding_bottom }}px;"
+>
+  <div class="fsg-wrap">
+    {%- if s.heading != blank -%}
+      <div class="fsg-sec-head">
+        <div class="fsg-sec-head__text">
+          {%- if s.eyebrow != blank -%}<p class="fsg-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+          <h2 class="fsg-h2">{{ s.heading }}</h2>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <div class="fsg-ranges__list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign b = block.settings
+          assign flip = false
+          assign idx = forloop.index0
+          if s.start_with_image_right
+            assign idx = idx | plus: 1
+          endif
+          assign odd = idx | modulo: 2
+          if odd == 1
+            assign flip = true
+          endif
+        -%}
+        <article class="fsg-range{% if flip %} fsg-range--flip{% endif %}" {{ block.shopify_attributes }}>
+          <div class="fsg-range__media fsg-rv">
+            {% render 'fsg-image',
+              image: b.image,
+              product: b.fallback_product,
+              photo: b.fallback_photo,
+              sizes: '(min-width: 990px) 640px, 100vw'
+            %}
+          </div>
+          <div class="fsg-range__body fsg-rv" style="--fsg-rv-delay: 0.08s">
+            {%- if b.eyebrow != blank -%}
+              <p class="fsg-eyebrow">{{ b.eyebrow }}</p>
+            {%- endif -%}
+            {%- if b.heading != blank -%}
+              <h3 class="fsg-range__title">{{ b.heading }}</h3>
+            {%- endif -%}
+            {%- if b.text != blank -%}
+              <div class="fsg-rte fsg-range__text">{{ b.text }}</div>
+            {%- endif -%}
+            {%- assign bullets = b.bullets | newline_to_br | split: '<br />' -%}
+            {%- if b.bullets != blank -%}
+              <ul class="fsg-ticks" role="list">
+                {%- for item in bullets -%}
+                  {%- assign item = item | strip -%}
+                  {%- if item != blank -%}
+                    <li>{% render 'fsg-icon', icon: 'check', size: 16 %}<span>{{ item }}</span></li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+            {%- if b.button_label != blank -%}
+              <a href="{{ b.button_link | default: '#' }}" class="fsg-btn fsg-btn--{{ b.button_style }}">
+                {{- b.button_label }}
+                {% render 'fsg-icon', icon: 'arrow-right', size: 17 -%}
+              </a>
+            {%- endif -%}
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FSG range banners",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "start_with_image_right",
+      "label": "Start with image on the right",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "default": "white",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "mist", "label": "Mist" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "banner",
+      "name": "Banner",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "product",
+          "id": "fallback_product",
+          "label": "Use a product photo",
+          "info": "Used when no image is uploaded."
+        },
+        {
+          "type": "range",
+          "id": "fallback_photo",
+          "label": "Product photo number",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "default": 1
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow",
+          "default": "Range"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Banner heading"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Short description of this range.</p>"
+        },
+        {
+          "type": "textarea",
+          "id": "bullets",
+          "label": "Bullet points",
+          "info": "One per line. Shown with ticks."
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "default": "primary",
+          "options": [
+            { "value": "primary", "label": "Solid" },
+            { "value": "outline", "label": "Outline" }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FSG range banners",
+      "blocks": [{ "type": "banner" }, { "type": "banner" }]
+    }
+  ]
+}
+{% endschema %}

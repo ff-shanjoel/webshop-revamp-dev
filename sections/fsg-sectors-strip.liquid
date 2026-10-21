@@ -1,0 +1,93 @@
+{%- liquid
+  assign s = section.settings
+  assign sectors = s.sectors | newline_to_br | split: '<br />'
+-%}
+
+<section
+  class="fsg fsg-sec fsg-sectors"
+  style="--fsg-pt: {{ s.padding_top }}px; --fsg-pb: {{ s.padding_bottom }}px; --fsg-marquee: {{ s.speed }}s;"
+>
+  {%- if s.heading != blank -%}
+    <div class="fsg-wrap">
+      <h2 class="fsg-sectors__title">{{ s.heading }}</h2>
+    </div>
+  {%- endif -%}
+
+  {%- capture items -%}
+    {%- for item in sectors -%}
+      {%- assign item = item | strip -%}
+      {%- if item != blank -%}
+        <li class="fsg-sectors__item">{{ item }}</li>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  <div class="fsg-sectors__track">
+    <div class="fsg-sectors__belt">
+      <ul class="fsg-sectors__list" role="list">{{ items }}</ul>
+      <ul class="fsg-sectors__list" role="list" aria-hidden="true">{{ items }}</ul>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FSG sectors strip",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Supplying floors across Ireland for"
+    },
+    {
+      "type": "textarea",
+      "id": "sectors",
+      "label": "Sectors",
+      "info": "One per line.",
+      "default": "Schools & colleges\nHospitals & clinics\nHotels\nRetail\nOffices\nLocal authorities\nLeisure centres\nHomes"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll duration",
+      "info": "Seconds for one full loop. Higher is slower.",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "unit": "s",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "FSG sectors strip"
+    }
+  ]
+}
+{% endschema %}

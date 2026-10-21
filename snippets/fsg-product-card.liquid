@@ -1,0 +1,108 @@
+{% comment %}
+  FSG product card with Dawn quick add (single-variant products only;
+  products with options link to the product page).
+
+  Accepts:
+  - card_product: {Object} product
+  - section_id: {String} section id, used for unique form ids
+  - badge: {String} badge text for available products (optional)
+  - show_vendor: {Boolean} (optional)
+  - eager: {Boolean} load the image eagerly (optional)
+
+  Usage:
+  {% render 'fsg-product-card', card_product: product, section_id: section.id, badge: 'In stock' %}
+{% endcomment %}
+{%- liquid
+  assign variant = card_product.selected_or_first_available_variant
+  assign form_id = 'fsg-qa-' | append: section_id | append: '-' | append: card_product.id
+  assign title_id = 'fsg-title-' | append: section_id | append: '-' | append: card_product.id
+  assign img_alt = card_product.featured_media.alt | default: card_product.title | escape
+  assign loading = 'lazy'
+  if eager
+    assign loading = 'eager'
+  endif
+-%}
+<article class="fsg-card">
+  <a href="{{ card_product.url }}" class="fsg-card__media" tabindex="-1" aria-hidden="true">
+    {%- if card_product.featured_media -%}
+      {{
+        card_product.featured_media
+        | image_url: width: 900
+        | image_tag:
+          widths: '300, 450, 600, 900',
+          sizes: '(min-width: 1200px) 300px, (min-width: 750px) 33vw, 50vw',
+          loading: loading,
+          alt: img_alt,
+          class: 'fsg-card__img'
+      }}
+      {%- if card_product.media[1] != null and card_product.media[1].media_type == 'image' -%}
+        {{
+          card_product.media[1]
+          | image_url: width: 900
+          | image_tag:
+            widths: '300, 450, 600, 900',
+            sizes: '(min-width: 1200px) 300px, (min-width: 750px) 33vw, 50vw',
+            loading: 'lazy',
+            alt: '',
+            class: 'fsg-card__img fsg-card__img--alt'
+        }}
+      {%- endif -%}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'fsg-placeholder' }}
+    {%- endif -%}
+  </a>
+
+  {%- if card_product.available -%}
+    {%- if badge != blank -%}
+      <span class="fsg-card__badge"><i aria-hidden="true"></i>{{ badge }}</span>
+    {%- endif -%}
+  {%- else -%}
+    <span class="fsg-card__badge fsg-card__badge--out">{{ 'products.product.sold_out' | t }}</span>
+  {%- endif -%}
+
+  <div class="fsg-card__body">
+    {%- if show_vendor and card_product.vendor != blank -%}
+      <span class="fsg-card__vendor">{{ card_product.vendor }}</span>
+    {%- endif -%}
+    <h3 class="fsg-card__title" id="{{ title_id }}">
+      <a href="{{ card_product.url }}">{{ card_product.title | escape }}</a>
+    </h3>
+
+    <div class="fsg-card__foot">
+      <div class="fsg-card__price">
+        {%- if card_product.price_varies -%}
+          <small>from</small>
+        {%- endif -%}
+        <strong>{{ card_product.price_min | money }}</strong>
+        {%- if card_product.compare_at_price_min > card_product.price_min -%}
+          <s>{{ card_product.compare_at_price_min | money }}</s>
+        {%- endif -%}
+      </div>
+
+      {%- if card_product.has_only_default_variant and card_product.available -%}
+        <product-form data-section-id="{{ section_id }}" data-hide-errors="true">
+          {%- form 'product', card_product, id: form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+            <input type="hidden" name="id" value="{{ variant.id }}" class="product-variant-id" disabled>
+            <button
+              id="{{ form_id }}-submit"
+              type="submit"
+              name="add"
+              class="fsg-btn fsg-btn--primary fsg-btn--sm fsg-card__add"
+              aria-labelledby="{{ form_id }}-submit {{ title_id }}"
+              aria-live="polite"
+              data-sold-out-message="true"
+            >
+              <span>{% render 'fsg-icon', icon: 'plus', size: 16 %} Add</span>
+              <span class="sold-out-message hidden">{{ 'products.product.sold_out' | t }}</span>
+              {%- render 'loading-spinner' -%}
+            </button>
+          {%- endform -%}
+        </product-form>
+      {%- else -%}
+        <a href="{{ card_product.url }}" class="fsg-btn fsg-btn--outline fsg-btn--sm" aria-describedby="{{ title_id }}">
+          {%- if card_product.available -%}Options{%- else -%}View{%- endif -%}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</article>

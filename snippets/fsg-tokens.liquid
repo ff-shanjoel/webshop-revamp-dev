@@ -1,0 +1,44 @@
+{% comment %}
+  FSG design tokens. Rendered in layout/theme.liquid after base.css.
+  Values come from Theme settings → FSG design.
+{% endcomment %}
+{%- if settings.fsg_use_manrope -%}
+  {% comment %}theme-check-disable RemoteAsset{% endcomment %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+  >
+  {% comment %}theme-check-enable RemoteAsset{% endcomment %}
+{%- endif -%}
+{% style %}
+  :root {
+    --fsg-ink: {{ settings.fsg_ink | default: '#16222f' }};
+    --fsg-ink-2: {{ settings.fsg_ink_2 | default: '#5b6878' }};
+    --fsg-ink-3: {{ settings.fsg_ink_3 | default: '#8a96a5' }};
+    --fsg-slate: {{ settings.fsg_slate | default: '#2f4a68' }};
+    --fsg-slate-dark: {{ settings.fsg_slate_dark | default: '#1d3149' }};
+    --fsg-steel: {{ settings.fsg_steel | default: '#5f7d9c' }};
+    --fsg-accent: {{ settings.fsg_accent | default: '#4a78b0' }};
+    --fsg-mist: {{ settings.fsg_mist | default: '#f3f5f8' }};
+    --fsg-mist-2: {{ settings.fsg_mist_2 | default: '#e7ebf0' }};
+    --fsg-line: {{ settings.fsg_line | default: '#e1e6ec' }};
+    --fsg-white: #ffffff;
+    --fsg-radius: {{ settings.fsg_radius | default: 8 }}px;
+    --fsg-radius-lg: calc(var(--fsg-radius) * 1.75);
+    --fsg-max: 1320px;
+    --fsg-gutter: clamp(16px, 3vw, 32px);
+    --fsg-shadow: 0 1px 2px rgba(22, 34, 47, 0.04), 0 8px 24px rgba(22, 34, 47, 0.06);
+    --fsg-shadow-lg: 0 2px 4px rgba(22, 34, 47, 0.05), 0 24px 48px rgba(22, 34, 47, 0.12);
+    --fsg-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --fsg-stick-offset: 0px;
+    {%- if settings.fsg_use_manrope %}
+      --fsg-font: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --font-body-family: var(--fsg-font);
+      --font-heading-family: var(--fsg-font);
+    {%- else %}
+      --fsg-font: var(--font-body-family);
+    {%- endif %}
+  }
+{% endstyle %}

@@ -2,27 +2,53 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
-    "footer": {
-      "type": "footer",
-      "blocks": {},
-      "block_order": [],
+    "fsg-footer": {
+      "type": "fsg-footer",
+      "blocks": {
+        "menu-shop": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "menu-help": {
+          "type": "menu",
+          "settings": {
+            "heading": "Help",
+            "menu": "footer"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Trade news & offers",
+            "text": "<p>New products, guides and occasional offers. No spam.</p>",
+            "button_label": "Subscribe"
+          }
+        }
+      },
+      "block_order": [
+        "menu-shop",
+        "menu-help",
+        "newsletter"
+      ],
       "settings": {
-        "color_scheme": "scheme-1",
-        "newsletter_enable": true,
-        "newsletter_heading": "Subscribe to our emails",
-        "enable_follow_on_shop": true,
-        "show_social": true,
-        "enable_country_selector": true,
-        "enable_language_selector": true,
-        "payment_enable": true,
+        "help_heading": "Need help with your project?",
+        "help_text": "Talk to a flooring specialist — free advice, measuring and same-day quotes.",
+        "phone": "(085) 1234 899",
+        "email": "info@facilityflooring.ie",
+        "email_label": "Email us",
+        "logo_width": 160,
+        "logo_mark": "TFSG",
+        "tagline": "Facility Flooring · 4EarthSolutions",
+        "about": "<p>Entrance matting, trims, wall protection and eco floor care for commercial and residential buildings across Ireland.</p>",
         "show_policy": true,
-        "margin_top": 0,
-        "padding_top": 36,
-        "padding_bottom": 36
+        "payment_enable": true
       }
     }
   },
   "order": [
-    "footer"
+    "fsg-footer"
   ]
 }

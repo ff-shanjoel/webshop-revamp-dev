@@ -1,0 +1,47 @@
+{% comment %}
+  Image with a product-photo fallback. Used by FSG banners until lifestyle
+  images are uploaded: if `image` is blank, the Nth photo of `product` is used.
+
+  Accepts:
+  - image: {Object} image_picker value (optional)
+  - product: {Object} fallback product (optional)
+  - photo: {Number} 1-based photo number on the fallback product (optional, default 1)
+  - sizes: {String} sizes attribute (optional)
+  - class: {String} class for the img (optional)
+  - alt: {String} alt text override (optional)
+  - eager: {Boolean} load eagerly, for above-the-fold images (optional)
+
+  Usage:
+  {% render 'fsg-image', image: section.settings.image, product: section.settings.fallback_product, photo: 3 %}
+{% endcomment %}
+{%- liquid
+  assign img = image
+  if img == blank and product != blank
+    assign idx = photo | default: 1 | minus: 1
+    if idx < 0
+      assign idx = 0
+    endif
+    assign img = product.images[idx] | default: product.featured_image
+  endif
+  assign sizes = sizes | default: '100vw'
+  assign loading = 'lazy'
+  if eager
+    assign loading = 'eager'
+  endif
+-%}
+{%- if img != blank -%}
+  {%- assign alt_text = alt | default: img.alt | default: product.title | escape -%}
+  {{
+    img
+    | image_url: width: 2400
+    | image_tag:
+      widths: '360, 540, 720, 960, 1200, 1600, 2000, 2400',
+      sizes: sizes,
+      loading: loading,
+      class: class,
+      alt: alt_text
+  }}
+{%- else -%}
+  {%- assign ph_class = class | append: ' fsg-placeholder' | strip -%}
+  {{ 'lifestyle-1' | placeholder_svg_tag: ph_class }}
+{%- endif -%}

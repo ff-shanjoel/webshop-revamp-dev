@@ -1,0 +1,132 @@
+{%- liquid
+  assign s = section.settings
+  assign phone_href = s.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+-%}
+
+<section class="fsg fsg-sec fsg-help" style="--fsg-pt: {{ s.padding_top }}px; --fsg-pb: {{ s.padding_bottom }}px;">
+  <div class="fsg-wrap">
+    <div class="fsg-help__band">
+      <div class="fsg-help__body fsg-rv">
+        {%- if s.eyebrow != blank -%}
+          <p class="fsg-eyebrow fsg-help__eyebrow">{{ s.eyebrow }}</p>
+        {%- endif -%}
+        {%- if s.heading != blank -%}
+          <h2 class="fsg-help__title">{{ s.heading }}</h2>
+        {%- endif -%}
+        {%- if s.text != blank -%}
+          <div class="fsg-rte fsg-help__text">{{ s.text }}</div>
+        {%- endif -%}
+        <div class="fsg-help__actions">
+          {%- if s.phone != blank -%}
+            <a href="tel:{{ phone_href }}" class="fsg-btn fsg-btn--light">
+              {% render 'fsg-icon', icon: 'phone', size: 18 %}
+              {{ s.phone }}
+            </a>
+          {%- endif -%}
+          {%- if s.email != blank -%}
+            <a href="mailto:{{ s.email }}" class="fsg-btn fsg-btn--ghost">
+              {% render 'fsg-icon', icon: 'mail', size: 18 %}
+              {{ s.email }}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="fsg-help__media">
+        {% render 'fsg-image',
+          image: s.image,
+          product: s.fallback_product,
+          photo: s.fallback_photo,
+          sizes: '(min-width: 990px) 560px, 100vw'
+        %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FSG help band",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Free advice"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Talk to someone who knows floors."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Not sure which mat, trim or treatment you need? Send us a photo or the measurements and we'll recommend the right product — usually the same day.</p>"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "(085) 1234 899"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "info@facilityflooring.ie"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "product",
+      "id": "fallback_product",
+      "label": "Use a product photo",
+      "info": "Used when no image is uploaded."
+    },
+    {
+      "type": "range",
+      "id": "fallback_photo",
+      "label": "Product photo number",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    }
+  ],
+  "presets": [
+    {
+      "name": "FSG help band"
+    }
+  ]
+}
+{% endschema %}
