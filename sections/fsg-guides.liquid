@@ -1,4 +1,13 @@
-{%- assign s = section.settings -%}
+{%- liquid
+  assign s = section.settings
+  assign has_articles = false
+  if s.blog != blank and s.blog.articles_count > 0
+    assign has_articles = true
+  endif
+-%}
+
+{%- comment -%} Placeholders only show in the theme editor; customers see nothing until the blog has articles. {%- endcomment -%}
+{%- if has_articles or request.design_mode -%}
 
 <section
   class="fsg fsg-sec fsg-guides{% if s.background == 'mist' %} fsg-sec--mist{% endif %}"
@@ -19,7 +28,7 @@
     </div>
 
     <ul class="fsg-guides__grid" role="list">
-      {%- if s.blog != blank and s.blog.articles_count > 0 -%}
+      {%- if has_articles -%}
         {%- for article in s.blog.articles limit: s.count -%}
           <li class="fsg-rv" style="--fsg-rv-delay: {{ forloop.index0 | times: 0.06 }}s">
             <a href="{{ article.url }}" class="fsg-guide">
@@ -70,6 +79,7 @@
     </ul>
   </div>
 </section>
+{%- endif -%}
 
 {% schema %}
 {

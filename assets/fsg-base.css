@@ -537,6 +537,22 @@
   .fsg-logo__tag {
     display: none;
   }
+  .fsg-logo {
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 10px;
+  }
+  .fsg-logo__text {
+    min-width: 0;
+  }
+  .fsg-logo__name {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+  .fsg-head__actions {
+    flex: none;
+    gap: 0;
+  }
   .fsg-logo img {
     max-height: 40px;
   }
