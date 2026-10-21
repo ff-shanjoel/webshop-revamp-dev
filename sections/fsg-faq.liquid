@@ -1,4 +1,7 @@
-{%- assign s = section.settings -%}
+{%- liquid
+  assign s = section.settings
+  assign fallback_contact = 'mailto:' | append: shop.email
+-%}
 
 <section
   class="fsg fsg-sec fsg-faq{% if s.background == 'mist' %} fsg-sec--mist{% endif %}"
@@ -10,7 +13,7 @@
       {%- if s.heading != blank -%}<h2 class="fsg-h2">{{ s.heading }}</h2>{%- endif -%}
       {%- if s.text != blank -%}<div class="fsg-rte">{{ s.text }}</div>{%- endif -%}
       {%- if s.button_label != blank -%}
-        <a href="{{ s.button_link | default: routes.root_url }}" class="fsg-btn fsg-btn--primary">
+        <a href="{{ s.button_link | default: fallback_contact }}" class="fsg-btn fsg-btn--primary">
           {{- s.button_label }}
           {% render 'fsg-icon', icon: 'arrow-right', size: 17 -%}
         </a>
@@ -81,7 +84,8 @@
     {
       "type": "url",
       "id": "button_link",
-      "label": "Button link"
+      "label": "Button link",
+      "info": "Leave empty to open an email to the store address."
     },
     {
       "type": "checkbox",

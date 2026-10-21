@@ -53,7 +53,6 @@
         "button_label": "Shop entrance matting",
         "button_link": "shopify://collections/secondary-textile-mats-for-recess",
         "button_2_label": "Get a quote",
-        "button_2_link": "shopify://pages/contact",
         "padding_top": 24,
         "padding_bottom": 48
       }
@@ -331,7 +330,6 @@
         "heading": "Questions we get asked a lot",
         "text": "<p>Can't find your answer? Our team is happy to help.</p>",
         "button_label": "Contact us",
-        "button_link": "shopify://pages/contact",
         "open_first": true,
         "background": "mist",
         "padding_top": 72,

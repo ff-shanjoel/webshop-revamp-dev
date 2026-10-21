@@ -1,6 +1,7 @@
 {%- liquid
   assign s = section.settings
   assign benefits = section.blocks | where: 'type', 'benefit'
+  assign fallback_contact = 'mailto:' | append: shop.email
 -%}
 
 <section
@@ -37,7 +38,7 @@
               </a>
             {%- endif -%}
             {%- if s.button_2_label != blank -%}
-              <a href="{{ s.button_2_link | default: '#' }}" class="fsg-btn fsg-btn--ghost">{{ s.button_2_label }}</a>
+              <a href="{{ s.button_2_link | default: fallback_contact }}" class="fsg-btn fsg-btn--ghost">{{ s.button_2_label }}</a>
             {%- endif -%}
           </div>
         {%- endif -%}
@@ -145,7 +146,8 @@
     {
       "type": "url",
       "id": "button_2_link",
-      "label": "Second button link"
+      "label": "Second button link",
+      "info": "Leave empty to open an email to the store address."
     },
     {
       "type": "header",

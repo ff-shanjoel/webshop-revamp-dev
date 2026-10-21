@@ -13,35 +13,35 @@
   color: var(--fsg-ink-2);
   -webkit-font-smoothing: antialiased;
 }
-.fsg *,
-.fsg *::before,
-.fsg *::after {
+:where(.fsg) *,
+:where(.fsg) *::before,
+:where(.fsg) *::after {
   box-sizing: border-box;
 }
-.fsg :is(h1, h2, h3, h4, h5, p, ul, ol, figure, blockquote) {
+:where(.fsg) :is(h1, h2, h3, h4, h5, p, ul, ol, figure, blockquote) {
   margin: 0;
 }
-.fsg :is(h1, h2, h3, h4, h5) {
+:where(.fsg) :is(h1, h2, h3, h4, h5) {
   font-family: var(--fsg-font);
   color: var(--fsg-ink);
   letter-spacing: -0.02em;
   line-height: 1.15;
   font-weight: 700;
 }
-.fsg :is(ul, ol) {
+:where(.fsg) :is(ul, ol) {
   padding: 0;
   list-style: none;
 }
-.fsg a {
+:where(.fsg) a {
   color: inherit;
   text-decoration: none;
 }
-.fsg img {
+:where(.fsg) img {
   display: block;
   max-width: 100%;
   height: auto;
 }
-.fsg button {
+:where(.fsg) button {
   font: inherit;
   color: inherit;
   letter-spacing: inherit;
