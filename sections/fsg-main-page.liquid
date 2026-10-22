@@ -1,0 +1,83 @@
+{%- liquid
+  assign s = section.settings
+  assign phone_href = s.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+-%}
+
+{{ 'fsg-pages.css' | asset_url | stylesheet_tag }}
+
+<section class="fsg fsg-doc">
+  <div class="fsg-wrap">
+    <nav class="fsg-crumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
+      <span aria-current="page">{{ page.title | escape }}</span>
+    </nav>
+
+    <div class="fsg-doc__layout{% unless s.show_help %} fsg-doc__layout--single{% endunless %}">
+      <div class="fsg-doc__main">
+        <h1 class="fsg-doc__title">{{ page.title | escape }}</h1>
+        <div class="fsg-prose">{{ page.content }}</div>
+      </div>
+
+      {%- if s.show_help -%}
+        <aside class="fsg-doc__aside">
+          <div class="fsg-post__cta">
+            <strong>{{ s.help_heading }}</strong>
+            {%- if s.help_text != blank -%}<p>{{ s.help_text }}</p>{%- endif -%}
+            {%- if s.phone != blank -%}
+              <a href="tel:{{ phone_href }}" class="fsg-post__cta-phone">
+                {% render 'fsg-icon', icon: 'phone', size: 16 %}
+                {{ s.phone }}
+              </a>
+            {%- endif -%}
+            {%- if s.email != blank -%}
+              <a href="mailto:{{ s.email }}" class="fsg-post__cta-phone">
+                {% render 'fsg-icon', icon: 'mail', size: 16 %}
+                {{ s.email }}
+              </a>
+            {%- endif -%}
+          </div>
+        </aside>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FSG page",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_help",
+      "label": "Show help box",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "help_heading",
+      "label": "Help heading",
+      "default": "Questions?"
+    },
+    {
+      "type": "text",
+      "id": "help_text",
+      "label": "Help text",
+      "default": "Our team is happy to help with orders, products and quotes."
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "(085) 1234 899"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "info@facilityflooring.ie"
+    }
+  ]
+}
+{% endschema %}

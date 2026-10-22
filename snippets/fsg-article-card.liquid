@@ -1,0 +1,46 @@
+{% comment %}
+  Article card for blog listings and "more guides".
+
+  Accepts:
+  - article: {Object} article
+  - featured: {Boolean} large horizontal layout (optional)
+  - sizes: {String} image sizes attribute (optional)
+
+  Usage:
+  {% render 'fsg-article-card', article: article, featured: true %}
+{% endcomment %}
+{%- liquid
+  assign words = article.content | strip_html | split: ' ' | size
+  assign minutes = words | divided_by: 200 | at_least: 1
+  assign sizes = sizes | default: '(min-width: 990px) 400px, 100vw'
+-%}
+<a href="{{ article.url }}" class="fsg-article{% if featured %} fsg-article--featured{% endif %}">
+  <span class="fsg-article__media">
+    {%- if article.image -%}
+      {{
+        article.image
+        | image_url: width: 1200
+        | image_tag: widths: '400, 600, 800, 1200', sizes: sizes, loading: 'lazy', alt: article.title
+      }}
+    {%- else -%}
+      <span class="fsg-article__noimg" aria-hidden="true">{% render 'fsg-icon', icon: 'leaf', size: 36 %}</span>
+    {%- endif -%}
+  </span>
+  <span class="fsg-article__body">
+    <span class="fsg-article__meta">
+      {%- if article.tags.size > 0 -%}
+        <span class="fsg-article__tag">{{ article.tags.first }}</span>
+      {%- endif -%}
+      {{ article.published_at | time_tag: format: 'date' }} · {{ minutes }} min read
+    </span>
+    <span class="fsg-article__title">{{ article.title | escape }}</span>
+    {%- assign excerpt = article.excerpt_or_content | strip_html | truncatewords: 28 -%}
+    {%- if excerpt != blank -%}
+      <span class="fsg-article__excerpt">{{ excerpt }}</span>
+    {%- endif -%}
+    <span class="fsg-article__more">
+      Read more
+      {% render 'fsg-icon', icon: 'arrow-right', size: 15 %}
+    </span>
+  </span>
+</a>

@@ -1,0 +1,252 @@
+{%- liquid
+  assign s = section.settings
+  assign words = article.content | strip_html | split: ' ' | size
+  assign minutes = words | divided_by: 200 | at_least: 1
+  assign phone_href = s.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+-%}
+
+{{ 'fsg-pages.css' | asset_url | stylesheet_tag }}
+
+<article class="fsg fsg-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="fsg-wrap">
+    <nav class="fsg-crumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
+      <a href="{{ blog.url }}">{{ s.blog_label | default: blog.title }}</a>
+      {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
+      <span aria-current="page">{{ article.title | escape }}</span>
+    </nav>
+
+    <header class="fsg-post__head">
+      {%- if article.tags.size > 0 -%}
+        <a href="{{ blog.url }}/tagged/{{ article.tags.first | handle }}" class="fsg-article__tag">{{ article.tags.first }}</a>
+      {%- endif -%}
+      <h1 class="fsg-post__title" itemprop="headline">{{ article.title | escape }}</h1>
+      <p class="fsg-post__meta">
+        {%- if s.show_author and article.author != blank -%}
+          <span itemprop="author">{{ article.author }}</span> ·
+        {% endif -%}
+        <span itemprop="datePublished" content="{{ article.published_at | date: '%Y-%m-%d' }}">
+          {{- article.published_at | time_tag: format: 'date' -}}
+        </span>
+        · {{ minutes }} min read
+      </p>
+    </header>
+
+    {%- if article.image -%}
+      <figure class="fsg-post__image">
+        {{
+          article.image
+          | image_url: width: 1800
+          | image_tag:
+            widths: '600, 900, 1200, 1500, 1800',
+            sizes: '(min-width: 1320px) 1100px, 100vw',
+            loading: 'eager',
+            alt: article.title,
+            itemprop: 'image'
+        }}
+      </figure>
+    {%- endif -%}
+
+    <div class="fsg-post__layout">
+      <div class="fsg-post__body fsg-prose" itemprop="articleBody">
+        {{ article.content }}
+      </div>
+
+      <aside class="fsg-post__aside">
+        <div class="fsg-post__share">
+          <strong>Share this guide</strong>
+          <div class="fsg-post__share-links">
+            <a
+              href="https://www.facebook.com/sharer/sharer.php?u={{ request.origin | append: article.url | url_encode }}"
+              target="_blank"
+              rel="noopener"
+              >Facebook</a
+            >
+            <a
+              href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.origin | append: article.url | url_encode }}"
+              target="_blank"
+              rel="noopener"
+              >LinkedIn</a
+            >
+            <button type="button" data-fsg-copy="{{ request.origin | append: article.url }}">Copy link</button>
+          </div>
+        </div>
+
+        {%- if s.cta_heading != blank -%}
+          <div class="fsg-post__cta">
+            <strong>{{ s.cta_heading }}</strong>
+            {%- if s.cta_text != blank -%}<p>{{ s.cta_text }}</p>{%- endif -%}
+            {%- if s.cta_link != blank -%}
+              <a href="{{ s.cta_link }}" class="fsg-btn fsg-btn--light fsg-btn--sm">
+                {{- s.cta_label }}
+                {% render 'fsg-icon', icon: 'arrow-right', size: 15 -%}
+              </a>
+            {%- endif -%}
+            {%- if s.phone != blank -%}
+              <a href="tel:{{ phone_href }}" class="fsg-post__cta-phone">
+                {% render 'fsg-icon', icon: 'phone', size: 16 %}
+                {{ s.phone }}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </aside>
+    </div>
+
+    {%- if blog.comments_enabled? -%}
+      <section class="fsg-post__comments" id="comments">
+        <h2 class="fsg-h3">{{ article.comments_count }} {% if article.comments_count == 1 %}comment{% else %}comments{% endif %}</h2>
+        {%- paginate article.comments by 20 -%}
+          <ul class="fsg-post__comment-list" role="list">
+            {%- for comment in article.comments -%}
+              <li>
+                <div class="fsg-rte">{{ comment.content }}</div>
+                <small>{{ comment.author }} · {{ comment.created_at | time_tag: format: 'date' }}</small>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endpaginate -%}
+        {%- form 'new_comment', article, class: 'fsg-form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="fsg-form__ok" role="status">
+              {%- if blog.moderated? -%}Thanks — your comment will appear once it's approved.{%- else -%}Thanks for your comment.{%- endif -%}
+            </p>
+          {%- endif -%}
+          {%- if form.errors -%}
+            <p class="fsg-form__err" role="alert">{{ form.errors | default_errors }}</p>
+          {%- endif -%}
+          <div class="fsg-form__row">
+            <label class="fsg-field">
+              <span>Name</span>
+              <input type="text" name="comment[author]" value="{{ form.author }}" autocomplete="name" required>
+            </label>
+            <label class="fsg-field">
+              <span>Email</span>
+              <input type="email" name="comment[email]" value="{{ form.email }}" autocomplete="email" required>
+            </label>
+          </div>
+          <label class="fsg-field">
+            <span>Comment</span>
+            <textarea name="comment[body]" rows="5" required>{{ form.body }}</textarea>
+          </label>
+          <button type="submit" class="fsg-btn fsg-btn--primary">Post comment</button>
+        {%- endform -%}
+      </section>
+    {%- endif -%}
+  </div>
+</article>
+
+{%- comment -%} More guides {%- endcomment -%}
+{%- liquid
+  assign more_count = 0
+  for a in blog.articles
+    if a.id != article.id
+      assign more_count = more_count | plus: 1
+    endif
+  endfor
+-%}
+{%- if s.show_more and more_count > 0 -%}
+  <section class="fsg fsg-sec fsg-sec--mist" style="--fsg-pt: 56px; --fsg-pb: 64px;">
+    <div class="fsg-wrap">
+      <div class="fsg-sec-head">
+        <div class="fsg-sec-head__text"><h2 class="fsg-h2">{{ s.more_heading }}</h2></div>
+        <a href="{{ blog.url }}" class="fsg-sec-head__link">
+          All guides
+          {% render 'fsg-icon', icon: 'arrow-right', size: 16 %}
+        </a>
+      </div>
+      <ul class="fsg-blog__grid" role="list">
+        {%- assign shown = 0 -%}
+        {%- for a in blog.articles -%}
+          {%- if a.id == article.id -%}{%- continue -%}{%- endif -%}
+          {%- if shown >= 3 -%}{%- break -%}{%- endif -%}
+          {%- assign shown = shown | plus: 1 -%}
+          <li>{% render 'fsg-article-card', article: a %}</li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+{%- endif -%}
+
+<script>
+  document.querySelectorAll('[data-fsg-copy]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      navigator.clipboard?.writeText(btn.dataset.fsgCopy).then(() => {
+        btn.textContent = 'Link copied';
+        setTimeout(() => (btn.textContent = 'Copy link'), 2000);
+      });
+    })
+  );
+</script>
+
+{% schema %}
+{
+  "name": "FSG article",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "blog_label",
+      "label": "Breadcrumb name for the blog",
+      "default": "Guides & advice"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Help box"
+    },
+    {
+      "type": "text",
+      "id": "cta_heading",
+      "label": "Heading",
+      "default": "Need the right product?"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Text",
+      "default": "Tell us about your floor and we'll recommend what to use — usually the same day."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Browse categories"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link",
+      "default": "/collections"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "(085) 1234 899"
+    },
+    {
+      "type": "header",
+      "content": "More guides"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_more",
+      "label": "Show more guides",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "more_heading",
+      "label": "Heading",
+      "default": "More guides"
+    }
+  ]
+}
+{% endschema %}

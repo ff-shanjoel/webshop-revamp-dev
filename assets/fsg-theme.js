@@ -173,7 +173,80 @@
     });
   }
 
+  /* ---------- Policy pages (rendered by Shopify, so tidied here) ---------- */
+  function initPolicy() {
+    const box = document.querySelector('.shopify-policy__container');
+    if (!box || box.dataset.fsgReady) return;
+    box.dataset.fsgReady = 'true';
+    box.classList.add('fsg', 'fsg-policy');
+    const body = box.querySelector('.shopify-policy__body .rte') || box.querySelector('.shopify-policy__body');
+
+    // Policies pasted from a PDF arrive as one block with a <br> at the end of every line.
+    // Rejoin wrapped lines into paragraphs and turn short stand-alone lines into headings.
+    if (body && !body.querySelector('p, h1, h2, h3, ul, ol') && body.querySelectorAll('br').length > 5) {
+      const lines = body.innerHTML
+        .split(/<br\s*\/?>/i)
+        .map((l) => l.replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim());
+      const text = (html) => html.replace(/<[^>]+>/g, '').trim();
+      const ends = (l) => /[.!?:;]$/.test(text(l));
+      const out = [];
+      let para = [];
+      let list = [];
+      const flushPara = () => para.length && out.push(`<p>${para.join(' ')}</p>`) && (para = []);
+      const flushList = () => list.length && out.push(`<ul>${list.map((i) => `<li>${i}</li>`).join('')}</ul>`) && (list = []);
+      lines.forEach((line, i) => {
+        if (!text(line)) {
+          flushPara();
+          flushList();
+          return;
+        }
+        const next = lines.slice(i + 1).find((l) => text(l)) || '';
+        const prevEnded = !para.length;
+        const t = text(line);
+        // ALL-CAPS lines (e.g. "1. WHO WE ARE") are always headings.
+        const caps = t.length <= 80 && /[A-Z]{3}/.test(t) && t === t.toUpperCase();
+        const bullet = !caps && /^([•●▪\-–]|\d+[.)])\s+/.test(t);
+        const heading =
+          caps || (prevEnded && t.length <= 60 && !ends(line) && /^[A-Z0-9]/.test(t) && (!next || /^[A-Z0-9“"(]/.test(text(next))));
+        if (bullet) {
+          flushPara();
+          list.push(line.replace(/^\s*([•●▪\-–]|\d+[.)])\s+/, ''));
+        } else if (heading) {
+          flushPara();
+          flushList();
+          out.push(`<h2>${line}</h2>`);
+        } else {
+          flushList();
+          para.push(line);
+          if (ends(line)) flushPara();
+        }
+      });
+      flushPara();
+      flushList();
+      body.innerHTML = out.join('');
+    }
+    if (body) body.classList.add('fsg-prose');
+
+    // Side menu with every policy (links come from the footer's policy list).
+    const links = [...document.querySelectorAll('.fsg-footer__legal a[href*="/policies/"]')];
+    if (links.length > 1) {
+      const nav = document.createElement('nav');
+      nav.className = 'fsg-policy__nav';
+      nav.setAttribute('aria-label', 'Policies');
+      nav.innerHTML =
+        '<strong>Policies</strong>' +
+        links
+          .map((a) => {
+            const current = new URL(a.href).pathname === location.pathname;
+            return `<a href="${a.getAttribute('href')}"${current ? ' aria-current="page"' : ''}>${a.textContent.trim()}</a>`;
+          })
+          .join('');
+      box.prepend(nav);
+    }
+  }
+
   function init(scope = document) {
+    initPolicy();
     initMega(scope);
     initDrawer(scope);
     initReveal(scope);

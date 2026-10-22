@@ -1,15 +1,13 @@
 {
   "sections": {
     "main": {
-      "type": "main-blog",
+      "type": "fsg-main-blog",
       "settings": {
-        "layout": "collage",
-        "show_image": true,
-        "image_height": "medium",
-        "show_date": true,
-        "show_author": false,
-        "padding_top": 36,
-        "padding_bottom": 36
+        "heading": "Guides & advice",
+        "intro": "How-to guides, product advice and news from the Facility Flooring and 4EarthSolutions team.",
+        "per_page": 12,
+        "empty_heading": "Guides are on the way",
+        "empty_text": "We're writing our first guides. In the meantime, our team is happy to help — just give us a call."
       }
     }
   },

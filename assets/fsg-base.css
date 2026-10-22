@@ -1395,3 +1395,183 @@ cart-notification .cart-notification__links .button-label {
   letter-spacing: 0;
   color: var(--fsg-ink-2);
 }
+
+/* ==========================================================================
+   Long-form text (articles, pages, policies)
+   ========================================================================== */
+.fsg-prose {
+  font-family: var(--fsg-font);
+  font-size: 16.5px;
+  line-height: 1.75;
+  letter-spacing: 0;
+  color: var(--fsg-ink-2);
+}
+.fsg-prose > * + * {
+  margin-top: 1em;
+}
+.fsg-prose :is(h1, h2, h3, h4) {
+  margin: 1.6em 0 0.5em;
+  font-family: var(--fsg-font);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--fsg-ink);
+}
+.fsg-prose > :is(h1, h2, h3, h4):first-child {
+  margin-top: 0;
+}
+.fsg-prose h2 {
+  font-size: 22px;
+}
+.fsg-prose h3 {
+  font-size: 19px;
+}
+.fsg-prose h4 {
+  font-size: 17px;
+}
+.fsg-prose a {
+  color: var(--fsg-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.fsg-prose strong {
+  color: var(--fsg-ink);
+}
+.fsg-prose :is(ul, ol) {
+  padding-left: 1.3em;
+}
+.fsg-prose ul {
+  list-style: disc;
+}
+.fsg-prose ol {
+  list-style: decimal;
+}
+.fsg-prose li + li {
+  margin-top: 0.4em;
+}
+.fsg-prose li::marker {
+  color: var(--fsg-steel);
+}
+.fsg-prose img {
+  height: auto;
+  border-radius: var(--fsg-radius);
+}
+.fsg-prose blockquote {
+  margin: 1.5em 0;
+  padding: 16px 20px;
+  border-left: 4px solid var(--fsg-accent);
+  border-radius: 0 var(--fsg-radius) var(--fsg-radius) 0;
+  background: var(--fsg-mist);
+  font-size: 17px;
+  color: var(--fsg-ink);
+}
+.fsg-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+.fsg-prose :is(td, th) {
+  padding: 10px 12px;
+  border: 1px solid var(--fsg-line);
+  text-align: left;
+}
+.fsg-prose th {
+  background: var(--fsg-mist);
+  color: var(--fsg-ink);
+}
+
+/* Policy pages: side menu + readable card */
+main .shopify-policy__container.fsg-policy {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 820px);
+  grid-template-areas:
+    'nav title'
+    'nav body';
+  gap: 0 48px;
+  justify-content: center;
+  max-width: var(--fsg-max);
+  margin: 0 auto;
+  padding: 40px var(--fsg-gutter) 80px;
+}
+.fsg-policy .shopify-policy__title {
+  grid-area: title;
+  margin: 0 0 24px;
+  text-align: left;
+}
+.fsg-policy .shopify-policy__title h1 {
+  margin: 0;
+  font-family: var(--fsg-font);
+  font-size: clamp(30px, 3vw, 42px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--fsg-ink);
+}
+.fsg-policy .shopify-policy__body {
+  grid-area: body;
+  padding: clamp(24px, 4vw, 40px);
+  border: 1px solid var(--fsg-line);
+  border-radius: var(--fsg-radius-lg);
+  background: var(--fsg-white);
+}
+.fsg-policy .fsg-prose h2 {
+  font-size: 19px;
+  color: var(--fsg-slate);
+}
+.fsg-policy__nav {
+  grid-area: nav;
+  position: sticky;
+  top: calc(var(--fsg-sticky-h, 60px) + 24px);
+  align-self: start;
+  display: grid;
+  gap: 2px;
+  margin-top: 8px;
+}
+.fsg-policy__nav strong {
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fsg-steel);
+}
+.fsg-policy__nav a {
+  padding: 10px 14px;
+  border-radius: var(--fsg-radius);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fsg-ink-2);
+  transition: background-color 0.15s, color 0.15s;
+}
+.fsg-policy__nav a:hover {
+  background: var(--fsg-mist);
+  color: var(--fsg-slate);
+}
+.fsg-policy__nav a[aria-current] {
+  background: color-mix(in srgb, var(--fsg-accent) 10%, var(--fsg-white));
+  color: var(--fsg-slate);
+}
+@media (max-width: 989px) {
+  main .shopify-policy__container.fsg-policy {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'title' 'nav' 'body';
+    padding-top: 24px;
+  }
+  .fsg-policy__nav {
+    position: static;
+    display: flex;
+    gap: 8px;
+    margin: 0 0 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .fsg-policy__nav strong {
+    display: none;
+  }
+  .fsg-policy__nav a {
+    flex: none;
+    border: 1px solid var(--fsg-line);
+    border-radius: 999px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+}
