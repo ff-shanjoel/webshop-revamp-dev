@@ -1,0 +1,61 @@
+{%- comment -%}
+  Progress steps at the top of the cart page. Also loads fsg-cart.css, which lays
+  out and restyles Dawn's cart sections, so keep this section on the cart template.
+{%- endcomment -%}
+{{ 'fsg-cart.css' | asset_url | stylesheet_tag }}
+
+<nav class="fsg fsg-cart-steps" aria-label="Checkout progress">
+  <span class="fsg-cart-steps__step is-current" aria-current="step">
+    <span class="fsg-cart-steps__num">1</span>
+    <span class="fsg-cart-steps__label">{{ section.settings.step_1 }}</span>
+  </span>
+  <span class="fsg-cart-steps__line" aria-hidden="true"></span>
+  <span class="fsg-cart-steps__step">
+    <span class="fsg-cart-steps__num">2</span>
+    <span class="fsg-cart-steps__label">{{ section.settings.step_2 }}</span>
+  </span>
+  <span class="fsg-cart-steps__line" aria-hidden="true"></span>
+  <span class="fsg-cart-steps__step">
+    <span class="fsg-cart-steps__num">3</span>
+    <span class="fsg-cart-steps__label">{{ section.settings.step_3 }}</span>
+  </span>
+</nav>
+
+{% schema %}
+{
+  "name": "FSG cart steps",
+  "tag": "div",
+  "enabled_on": {
+    "templates": ["cart"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This section also styles the cart page layout. Keep it on the cart template."
+    },
+    {
+      "type": "text",
+      "id": "step_1",
+      "label": "Step 1",
+      "default": "Your basket"
+    },
+    {
+      "type": "text",
+      "id": "step_2",
+      "label": "Step 2",
+      "default": "Delivery & payment"
+    },
+    {
+      "type": "text",
+      "id": "step_3",
+      "label": "Step 3",
+      "default": "Order confirmed"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FSG cart steps"
+    }
+  ]
+}
+{% endschema %}

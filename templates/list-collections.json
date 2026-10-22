@@ -1,13 +1,15 @@
 {
   "sections": {
     "main": {
-      "type": "main-list-collections",
+      "type": "fsg-list-collections",
       "settings": {
-        "title": "Collections",
-        "sort": "alphabetical",
-        "image_ratio": "square",
-        "columns_desktop": 3,
-        "columns_mobile": "2"
+        "title": "All categories",
+        "text": "Pick a range to see every product, size and price.",
+        "menu": "main-menu",
+        "show_others": true,
+        "others_heading": "More categories",
+        "hide_empty": true,
+        "hide_handles": "covid-mats, covid-essentials"
       }
     }
   },

@@ -1,0 +1,94 @@
+{%- liquid
+  assign s = section.settings
+  assign phone_href = s.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+-%}
+
+<div class="fsg fsg-cart-assist">
+  {%- if s.delivery_heading != blank -%}
+    <div class="fsg-cart-assist__delivery">
+      {% render 'fsg-icon', icon: 'truck', size: 22 %}
+      <div>
+        <strong>{{ s.delivery_heading }}</strong>
+        {%- if s.delivery_text != blank -%}
+          <span>{{ s.delivery_text }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if section.blocks.size > 0 -%}
+    <ul class="fsg-cart-assist__list" role="list">
+      {%- for block in section.blocks -%}
+        <li {{ block.shopify_attributes }}>
+          {% render 'fsg-icon', icon: 'check', size: 16 %}
+          {{ block.settings.text }}
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if s.phone != blank -%}
+    <a href="tel:{{ phone_href }}" class="fsg-cart-assist__help">
+      {% render 'fsg-icon', icon: 'phone', size: 18 %}
+      {{ s.help_text }}
+      {{ s.phone }}
+    </a>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "FSG cart help",
+  "tag": "div",
+  "enabled_on": {
+    "templates": ["cart"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "delivery_heading",
+      "label": "Delivery heading",
+      "default": "Delivered in 2–3 working days"
+    },
+    {
+      "type": "text",
+      "id": "delivery_text",
+      "label": "Delivery text",
+      "default": "€15 anywhere in the Republic of Ireland. Made-to-order items take longer."
+    },
+    {
+      "type": "text",
+      "id": "help_text",
+      "label": "Help line text",
+      "default": "Questions? Call"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "(085) 1234 899"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "line",
+      "name": "Reassurance line",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Secure checkout"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FSG cart help",
+      "blocks": [{ "type": "line" }]
+    }
+  ]
+}
+{% endschema %}

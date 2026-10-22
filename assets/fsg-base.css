@@ -1305,3 +1305,93 @@ html.fsg-lock body {
     grid-column: 1 / -1;
   }
 }
+
+/* ==========================================================================
+   Cart popup (restyles Dawn's cart-notification shown after Add to basket)
+   ========================================================================== */
+cart-notification .cart-notification-wrapper .cart-notification {
+  top: 8px;
+  padding: 20px;
+  border: 1px solid var(--fsg-line);
+  border-radius: var(--fsg-radius-lg);
+  background: var(--fsg-white);
+  box-shadow: var(--fsg-shadow-lg);
+  font-family: var(--fsg-font);
+}
+cart-notification .cart-notification__header {
+  align-items: center;
+}
+cart-notification .cart-notification__heading {
+  font-family: var(--fsg-font);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: #2f6b4f;
+}
+cart-notification .cart-notification__heading .svg-wrapper {
+  color: #3a9a6c;
+}
+cart-notification .cart-notification-product {
+  gap: 14px;
+  padding: 16px 0;
+}
+cart-notification .cart-notification-product__image {
+  margin: 0;
+  border: 1px solid var(--fsg-line);
+  border-radius: calc(var(--fsg-radius) - 2px);
+  overflow: hidden;
+}
+cart-notification .cart-notification-product__name {
+  margin: 0 0 4px;
+  font-family: var(--fsg-font);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--fsg-ink);
+}
+cart-notification .cart-notification-product .product-option {
+  font-size: 13px;
+  color: var(--fsg-ink-2);
+}
+cart-notification .cart-notification__links {
+  display: grid;
+  gap: 8px;
+}
+cart-notification .cart-notification__links .button {
+  min-height: 48px;
+  margin: 0;
+  border-radius: var(--fsg-radius);
+  font-family: var(--fsg-font);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+  box-shadow: none;
+}
+cart-notification .cart-notification__links .button::before,
+cart-notification .cart-notification__links .button::after {
+  display: none;
+}
+cart-notification .cart-notification__links .button--primary {
+  background: var(--fsg-slate);
+  color: var(--fsg-white);
+}
+cart-notification .cart-notification__links .button--primary:hover {
+  background: var(--fsg-slate-dark);
+}
+cart-notification .cart-notification__links .button--secondary {
+  border: 1px solid var(--fsg-line);
+  background: var(--fsg-white);
+  color: var(--fsg-ink);
+}
+cart-notification .cart-notification__links .button--secondary:hover {
+  border-color: var(--fsg-slate);
+  color: var(--fsg-slate);
+}
+cart-notification .cart-notification__links .button-label {
+  margin-top: 4px;
+  font-family: var(--fsg-font);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--fsg-ink-2);
+}

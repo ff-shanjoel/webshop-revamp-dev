@@ -18,7 +18,13 @@
   if product.has_only_default_variant
     assign has_options = false
   endif
-  assign qty_step = product.options.size | plus: 1
+  # Only options with more than one value are real choices; single-value ones are shown as a plain line.
+  assign qty_step = 1
+  for option in product.options_with_values
+    if option.values.size > 1
+      assign qty_step = qty_step | plus: 1
+    endif
+  endfor
   if has_options == false
     assign qty_step = 1
   endif
@@ -155,13 +161,23 @@
 
             {%- comment -%} Step-by-step options {%- endcomment -%}
             {%- if has_options -%}
+              {%- assign step_num = 0 -%}
               {%- for option in product.options_with_values -%}
-                <fieldset class="fsg-step" data-fsg-option="{{ forloop.index0 }}">
+                {%- assign single = false -%}
+                {%- if option.values.size == 1 -%}
+                  {%- assign single = true -%}
+                {%- else -%}
+                  {%- assign step_num = step_num | plus: 1 -%}
+                {%- endif -%}
+                <fieldset class="fsg-step{% if single %} fsg-step--single{% endif %}" data-fsg-option="{{ forloop.index0 }}">
                   <legend class="fsg-step__legend">
-                    <span class="fsg-step__num">{{ forloop.index }}</span>
+                    {%- unless single -%}<span class="fsg-step__num">{{ step_num }}</span>{%- endunless -%}
                     <span>
-                      {{- s.choose_label }}
-                      {{ option.name | downcase -}}
+                      {%- if single -%}
+                        {{ option.name }}:
+                      {%- else -%}
+                        {{ s.choose_label }} {{ option.name | downcase }}
+                      {%- endif -%}
                     </span>
                     <span class="fsg-step__value" data-fsg-option-value>{{ option.selected_value }}</span>
                   </legend>

@@ -976,3 +976,22 @@ input:focus-visible + .fsg-pill {
 .fsg-related:empty {
   display: none;
 }
+
+/* All categories page */
+.fsg-cats-page__group + .fsg-cats-page__group {
+  margin-top: 48px;
+}
+
+/* Options with a single value: shown as a plain line, not a step */
+.fsg-step--single .fsg-pills {
+  display: none;
+}
+.fsg-step--single .fsg-step__legend {
+  margin-bottom: 0;
+  font-weight: 500;
+  color: var(--fsg-ink-2);
+}
+.fsg-step--single .fsg-step__value {
+  margin-left: 0;
+  color: var(--fsg-ink);
+}

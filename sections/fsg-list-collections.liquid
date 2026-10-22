@@ -1,0 +1,136 @@
+{%- liquid
+  assign s = section.settings
+  assign hidden_handles = s.hide_handles | remove: ' ' | split: ','
+  assign shown_urls = ''
+-%}
+
+{{ 'fsg-pages.css' | asset_url | stylesheet_tag }}
+
+<section class="fsg fsg-plp fsg-cats-page">
+  <div class="fsg-wrap">
+    <nav class="fsg-crumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
+      <span aria-current="page">{{ s.title }}</span>
+    </nav>
+
+    <header class="fsg-plp__head">
+      <h1 class="fsg-plp__title">{{ s.title }}</h1>
+      {%- if s.text != blank -%}
+        <p class="fsg-plp__desc">{{ s.text }}</p>
+      {%- endif -%}
+    </header>
+
+    {%- comment -%} One group per top-level menu item that has sub-collections {%- endcomment -%}
+    {%- if s.menu != blank -%}
+      {%- for link in s.menu.links -%}
+        {%- if link.links.size == 0 -%}{%- continue -%}{%- endif -%}
+        {%- comment -%} The group's own collection is reached via Shop all, so don't repeat it under More categories {%- endcomment -%}
+        {%- assign shown_urls = shown_urls | append: link.url | append: '|' -%}
+        {%- capture tiles -%}
+          {%- for child in link.links -%}
+            {%- if child.type != 'collection_link' -%}{%- continue -%}{%- endif -%}
+            {%- assign c = child.object -%}
+            {%- if hidden_handles contains c.handle -%}{%- continue -%}{%- endif -%}
+            {%- if s.hide_empty and c.products_count == 0 -%}{%- continue -%}{%- endif -%}
+            {%- assign shown_urls = shown_urls | append: c.url | append: '|' -%}
+            <li>{% render 'fsg-collection-tile', collection: c, title: child.title %}</li>
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- if tiles != blank -%}
+          <div class="fsg-cats-page__group">
+            <div class="fsg-sec-head">
+              <div class="fsg-sec-head__text">
+                <h2 class="fsg-h2">{{ link.title | remove: 'Shop ' | escape }}</h2>
+              </div>
+              {%- if link.type == 'collection_link' and link.object.products_count > 0 -%}
+                <a href="{{ link.url }}" class="fsg-sec-head__link">
+                  Shop all
+                  {% render 'fsg-icon', icon: 'arrow-right', size: 16 %}
+                </a>
+              {%- endif -%}
+            </div>
+            <ul class="fsg-tiles__grid fsg-cats-page__grid" role="list">{{ tiles }}</ul>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+
+    {%- comment -%} Everything else that isn't in the menu {%- endcomment -%}
+    {%- if s.show_others -%}
+      {%- capture others -%}
+        {%- for c in collections -%}
+          {%- assign marker = c.url | append: '|' -%}
+          {%- if shown_urls contains marker -%}{%- continue -%}{%- endif -%}
+          {%- if hidden_handles contains c.handle -%}{%- continue -%}{%- endif -%}
+          {%- if c.handle == 'frontpage' or c.handle == 'all' -%}{%- continue -%}{%- endif -%}
+          {%- if s.hide_empty and c.products_count == 0 -%}{%- continue -%}{%- endif -%}
+          <li>{% render 'fsg-collection-tile', collection: c %}</li>
+        {%- endfor -%}
+      {%- endcapture -%}
+      {%- if others != blank -%}
+        <div class="fsg-cats-page__group">
+          <div class="fsg-sec-head">
+            <div class="fsg-sec-head__text">
+              <h2 class="fsg-h2">{{ s.others_heading }}</h2>
+            </div>
+          </div>
+          <ul class="fsg-tiles__grid fsg-cats-page__grid" role="list">{{ others }}</ul>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FSG all categories",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "All categories"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Intro",
+      "default": "Pick a range to see every product, size and price."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Group by menu",
+      "default": "main-menu",
+      "info": "Each top-level item with sub-collections becomes a group."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_others",
+      "label": "Show collections that aren't in the menu",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "others_heading",
+      "label": "Heading for other collections",
+      "default": "More categories"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_empty",
+      "label": "Hide empty collections",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hide_handles",
+      "label": "Hide these collections",
+      "info": "Collection handles, separated by commas.",
+      "default": "covid-mats, covid-essentials"
+    }
+  ]
+}
+{% endschema %}
