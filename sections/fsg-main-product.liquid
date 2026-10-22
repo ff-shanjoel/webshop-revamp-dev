@@ -1,0 +1,465 @@
+{%- liquid
+  assign s = section.settings
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'FsgProductForm-' | append: section.id
+  assign phone_href = s.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+
+  assign crumb = collection
+  if crumb == blank
+    assign crumb = product.collections.first
+  endif
+
+  assign made_to_order = false
+  if s.mto_tag != blank and product.tags contains s.mto_tag
+    assign made_to_order = true
+  endif
+
+  assign has_options = true
+  if product.has_only_default_variant
+    assign has_options = false
+  endif
+  assign qty_step = product.options.size | plus: 1
+  if has_options == false
+    assign qty_step = 1
+  endif
+-%}
+
+{{ 'fsg-pages.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'fsg-product.js' | asset_url }}" defer="defer"></script>
+
+<section class="fsg fsg-pdp" data-fsg-product data-section="{{ section.id }}" data-url="{{ product.url }}">
+  <div class="fsg-wrap">
+    {%- comment -%} Breadcrumb {%- endcomment -%}
+    <nav class="fsg-crumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      {%- if crumb != blank -%}
+        {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
+        <a href="{{ crumb.url }}">{{ crumb.title | escape }}</a>
+      {%- endif -%}
+      {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
+      <span aria-current="page">{{ product.title | escape }}</span>
+    </nav>
+
+    <div class="fsg-pdp__grid">
+      {%- comment -%} Gallery {%- endcomment -%}
+      <div class="fsg-gallery" data-fsg-gallery>
+        <div class="fsg-gallery__main">
+          {%- for media in product.media -%}
+            <figure
+              class="fsg-gallery__slide{% if media.id == current_variant.featured_media.id or current_variant.featured_media == null and forloop.first %} is-active{% endif %}"
+              data-media-id="{{ media.id }}"
+            >
+              {%- assign img_loading = 'lazy' -%}
+              {%- if forloop.first -%}{%- assign img_loading = 'eager' -%}{%- endif -%}
+              {{
+                media.preview_image
+                | image_url: width: 1400
+                | image_tag:
+                  widths: '480, 720, 960, 1200, 1400',
+                  sizes: '(min-width: 990px) 640px, 100vw',
+                  loading: img_loading,
+                  alt: media.alt
+              }}
+            </figure>
+          {%- else -%}
+            <figure class="fsg-gallery__slide is-active">{{ 'product-1' | placeholder_svg_tag: 'fsg-placeholder' }}</figure>
+          {%- endfor -%}
+          {%- if product.media.size > 1 -%}
+            <button type="button" class="fsg-gallery__nav fsg-gallery__nav--prev" data-fsg-gallery-prev aria-label="Previous image">
+              {% render 'fsg-icon', icon: 'chevron-right', size: 20 %}
+            </button>
+            <button type="button" class="fsg-gallery__nav fsg-gallery__nav--next" data-fsg-gallery-next aria-label="Next image">
+              {% render 'fsg-icon', icon: 'chevron-right', size: 20 %}
+            </button>
+          {%- endif -%}
+        </div>
+        {%- if product.media.size > 1 -%}
+          <ul class="fsg-gallery__thumbs" role="list">
+            {%- for media in product.media -%}
+              <li>
+                <button
+                  type="button"
+                  class="fsg-gallery__thumb{% if media.id == current_variant.featured_media.id or current_variant.featured_media == null and forloop.first %} is-active{% endif %}"
+                  data-media-id="{{ media.id }}"
+                  aria-label="Show image {{ forloop.index }}"
+                >
+                  {{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+                </button>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Buy box {%- endcomment -%}
+      <div class="fsg-buy">
+        {%- if product.vendor != blank -%}
+          <p class="fsg-eyebrow">{{ product.vendor }}</p>
+        {%- endif -%}
+        <h1 class="fsg-buy__title">{{ product.title | escape }}</h1>
+        <p class="fsg-buy__sku"{% if current_variant.sku == blank %} hidden{% endif %}>
+          Item code: <span data-fsg-sku>{{ current_variant.sku }}</span>
+        </p>
+
+        <div class="fsg-buy__price">
+          <strong data-fsg-price>{{ current_variant.price | money }}</strong>
+          <s data-fsg-compare{% unless current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}>
+            {{- current_variant.compare_at_price | money -}}
+          </s>
+          {%- if s.show_ex_vat -%}
+            {%- assign ex_vat = current_variant.price | times: 100 | divided_by: 123 -%}
+            <span class="fsg-buy__exvat"><span data-fsg-exvat>{{ ex_vat | money }}</span> ex VAT</span>
+          {%- endif -%}
+        </div>
+        <p class="fsg-buy__vatnote">Price includes 23% VAT</p>
+
+        {%- comment -%} Delivery estimate {%- endcomment -%}
+        <div
+          class="fsg-delivery{% if made_to_order %} fsg-delivery--mto{% endif %}"
+          data-fsg-delivery
+          data-min="{% if made_to_order %}{{ s.mto_min_days }}{% else %}{{ s.min_days }}{% endif %}"
+          data-max="{% if made_to_order %}{{ s.mto_max_days }}{% else %}{{ s.max_days }}{% endif %}"
+          data-cutoff="{{ s.cutoff_hour }}"
+        >
+          <span class="fsg-delivery__icon">{% render 'fsg-icon', icon: 'truck', size: 22 %}</span>
+          <div class="fsg-delivery__body">
+            {%- if made_to_order -%}
+              <strong>Made to order for you</strong>
+              <p>
+                Estimated delivery <b data-fsg-delivery-range>in {{ s.mto_min_days }}–{{ s.mto_max_days }} working days</b>
+                after you approve your free digital proof.
+              </p>
+            {%- else -%}
+              <strong>
+                Delivery <b data-fsg-delivery-range>in {{ s.min_days }}–{{ s.max_days }} working days</b>
+              </strong>
+              <p data-fsg-delivery-cutoff hidden>
+                Order within <b data-fsg-countdown></b> to dispatch today
+              </p>
+            {%- endif -%}
+            {%- if s.delivery_note != blank -%}
+              <p class="fsg-delivery__note">{{ s.delivery_note }}</p>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <product-form class="fsg-buy__form" data-section-id="{{ section.id }}">
+          <div class="product-form__error-message-wrapper fsg-buy__error" role="alert" hidden>
+            {% render 'fsg-icon', icon: 'close', size: 16 %}
+            <span class="product-form__error-message"></span>
+          </div>
+
+          {%- form 'product', product, id: form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+            <input type="hidden" name="id" value="{{ current_variant.id }}" class="product-variant-id" disabled>
+
+            {%- comment -%} Step-by-step options {%- endcomment -%}
+            {%- if has_options -%}
+              {%- for option in product.options_with_values -%}
+                <fieldset class="fsg-step" data-fsg-option="{{ forloop.index0 }}">
+                  <legend class="fsg-step__legend">
+                    <span class="fsg-step__num">{{ forloop.index }}</span>
+                    <span>
+                      {{- s.choose_label }}
+                      {{ option.name | downcase -}}
+                    </span>
+                    <span class="fsg-step__value" data-fsg-option-value>{{ option.selected_value }}</span>
+                  </legend>
+                  <div class="fsg-pills">
+                    {%- for value in option.values -%}
+                      {%- assign input_id = section.id | append: '-' | append: option.position | append: '-' | append: forloop.index0 -%}
+                      <input
+                        type="radio"
+                        class="visually-hidden"
+                        id="{{ input_id }}"
+                        name="fsg-option-{{ option.position }}"
+                        value="{{ value | escape }}"
+                        {% if option.selected_value == value %}
+                          checked
+                        {% endif %}
+                      >
+                      <label class="fsg-pill" for="{{ input_id }}">{{ value }}</label>
+                    {%- endfor -%}
+                  </div>
+                </fieldset>
+              {%- endfor -%}
+            {%- endif -%}
+
+            <div class="fsg-step fsg-step--qty">
+              <div class="fsg-step__legend">
+                <span class="fsg-step__num">{{ qty_step }}</span>
+                <span>How many?</span>
+              </div>
+              <div class="fsg-buy__row">
+                <div class="fsg-qty">
+                  <button type="button" class="fsg-qty__btn" data-fsg-qty="-1" aria-label="Decrease quantity">−</button>
+                  <input
+                    class="fsg-qty__input"
+                    type="number"
+                    name="quantity"
+                    value="1"
+                    min="1"
+                    inputmode="numeric"
+                    aria-label="Quantity"
+                  >
+                  <button type="button" class="fsg-qty__btn" data-fsg-qty="1" aria-label="Increase quantity">+</button>
+                </div>
+                <button
+                  id="{{ form_id }}-submit"
+                  type="submit"
+                  name="add"
+                  class="fsg-btn fsg-btn--primary fsg-buy__add"
+                  data-fsg-add
+                  {% unless current_variant.available %}
+                    disabled
+                  {% endunless %}
+                >
+                  <span data-fsg-add-label>
+                    {%- if current_variant.available -%}
+                      {% render 'fsg-icon', icon: 'cart', size: 19 %}
+                      Add to basket
+                    {%- else -%}
+                      {{ 'products.product.sold_out' | t }}
+                    {%- endif -%}
+                  </span>
+                  <span class="sold-out-message hidden">{{ 'products.product.sold_out' | t }}</span>
+                  {%- render 'loading-spinner' -%}
+                </button>
+              </div>
+            </div>
+
+            {%- if s.show_buy_now -%}
+              <div class="fsg-buy__now">{{ form | payment_button }}</div>
+            {%- endif -%}
+          {%- endform -%}
+        </product-form>
+
+        <p class="fsg-buy__stock" data-fsg-stock>
+          {%- if current_variant.available -%}
+            <i class="is-in" aria-hidden="true"></i> In stock, ready to ship
+          {%- else -%}
+            <i aria-hidden="true"></i> Currently out of stock
+          {%- endif -%}
+        </p>
+
+        {%- comment -%} Reassurance {%- endcomment -%}
+        <ul class="fsg-assure" role="list">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}>
+              {% render 'fsg-icon', icon: block.settings.icon, size: 18 %}
+              <span>{{ block.settings.text }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        {%- if s.phone != blank -%}
+          <a href="tel:{{ phone_href }}" class="fsg-buy__help">
+            <span class="fsg-buy__help-icon">{% render 'fsg-icon', icon: 'phone', size: 18 %}</span>
+            <span>
+              <strong>{{ s.help_heading }}</strong>
+              <small>Call {{ s.phone }} — we'll help you pick the right product.</small>
+            </span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} Details {%- endcomment -%}
+    <div class="fsg-pdp__details">
+      <details class="fsg-acc" open>
+        <summary>
+          Product details
+          <span class="fsg-acc__icon" aria-hidden="true">{% render 'fsg-icon', icon: 'plus', size: 18 %}</span>
+        </summary>
+        <div class="fsg-rte fsg-acc__body">
+          {{- product.description | default: '<p>More details coming soon. Call us if you have any questions.</p>' -}}
+        </div>
+      </details>
+      {%- if s.delivery_text != blank -%}
+        <details class="fsg-acc">
+          <summary>
+            Delivery &amp; returns
+            <span class="fsg-acc__icon" aria-hidden="true">{% render 'fsg-icon', icon: 'plus', size: 18 %}</span>
+          </summary>
+          <div class="fsg-rte fsg-acc__body">{{ s.delivery_text }}</div>
+        </details>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%} Sticky add-to-basket bar (shows once the main button scrolls away) {%- endcomment -%}
+  <div class="fsg-sticky-buy" data-fsg-sticky-buy aria-hidden="true">
+    <div class="fsg-wrap fsg-sticky-buy__inner">
+      <span class="fsg-sticky-buy__title">{{ product.title | escape }}</span>
+      <strong class="fsg-sticky-buy__price" data-fsg-price>{{ current_variant.price | money }}</strong>
+      <button type="button" class="fsg-btn fsg-btn--primary" data-fsg-sticky-add tabindex="-1">Add to basket</button>
+    </div>
+  </div>
+
+  <script type="application/json" data-fsg-product-json>
+    {
+      "variants": [
+        {%- for v in product.variants -%}
+          {
+            "id": {{ v.id }},
+            "options": {{ v.options | json }},
+            "available": {{ v.available | json }},
+            "price": {{ v.price | money | json }},
+            "exVat": {{ v.price | times: 100 | divided_by: 123 | money | json }},
+            "compare": {% if v.compare_at_price > v.price %}{{ v.compare_at_price | money | json }}{% else %}null{% endif %},
+            "sku": {{ v.sku | json }},
+            "mediaId": {{ v.featured_media.id | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "soldOut": {{ 'products.product.sold_out' | t | json }},
+      "unavailable": {{ 'products.product.unavailable' | t | json }}
+    }
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "FSG product",
+  "tag": "div",
+  "class": "fsg-pdp-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Steps"
+    },
+    {
+      "type": "text",
+      "id": "choose_label",
+      "label": "Option step prefix",
+      "default": "Choose your",
+      "info": "Shown before each option name, e.g. Choose your size."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_buy_now",
+      "label": "Show Buy it now button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ex_vat",
+      "label": "Show price ex VAT",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Delivery estimate"
+    },
+    {
+      "type": "range",
+      "id": "min_days",
+      "label": "Delivery from (working days)",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "max_days",
+      "label": "Delivery up to (working days)",
+      "min": 1,
+      "max": 15,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "cutoff_hour",
+      "label": "Same-day dispatch cut-off (24h)",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "text",
+      "id": "delivery_note",
+      "label": "Delivery note",
+      "default": "€15 delivery anywhere in the Republic of Ireland"
+    },
+    {
+      "type": "text",
+      "id": "mto_tag",
+      "label": "Made-to-order product tag",
+      "default": "Logo Mats",
+      "info": "Products with this tag show the made-to-order delivery time instead."
+    },
+    {
+      "type": "range",
+      "id": "mto_min_days",
+      "label": "Made to order from (working days)",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "mto_max_days",
+      "label": "Made to order up to (working days)",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Help"
+    },
+    {
+      "type": "text",
+      "id": "help_heading",
+      "label": "Help heading",
+      "default": "Not sure what to choose?"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "(085) 1234 899"
+    },
+    {
+      "type": "richtext",
+      "id": "delivery_text",
+      "label": "Delivery & returns text",
+      "default": "<p>Delivery anywhere in the Republic of Ireland is €15. Most orders arrive in 2–3 working days.</p><p>Made-to-order items such as logo mats are dispatched after you approve your digital proof and can't be returned once made.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "assurance",
+      "name": "Reassurance line",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "check",
+          "options": [
+            { "value": "check", "label": "Tick" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "truck", "label": "Delivery" },
+            { "value": "ruler", "label": "Made to measure" },
+            { "value": "chat", "label": "Advice" },
+            { "value": "leaf", "label": "Eco" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Secure checkout"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -8,6 +8,8 @@
   - badge: {String} badge text for available products (optional)
   - show_vendor: {Boolean} (optional)
   - eager: {Boolean} load the image eagerly (optional)
+  - ship_text: {String} delivery line for available products, e.g. 'Delivery in 2–3 working days' (optional)
+  - mto_tag: {String} products with this tag show a made-to-order line instead (optional)
 
   Usage:
   {% render 'fsg-product-card', card_product: product, section_id: section.id, badge: 'In stock' %}
@@ -67,6 +69,14 @@
     <h3 class="fsg-card__title" id="{{ title_id }}">
       <a href="{{ card_product.url }}">{{ card_product.title | escape }}</a>
     </h3>
+
+    {%- if ship_text != blank and card_product.available -%}
+      {%- if mto_tag != blank and card_product.tags contains mto_tag -%}
+        <span class="fsg-card__ship fsg-card__ship--mto">{% render 'fsg-icon', icon: 'clock', size: 14 %} Made to order</span>
+      {%- else -%}
+        <span class="fsg-card__ship">{% render 'fsg-icon', icon: 'truck', size: 14 %} {{ ship_text }}</span>
+      {%- endif -%}
+    {%- endif -%}
 
     <div class="fsg-card__foot">
       <div class="fsg-card__price">
