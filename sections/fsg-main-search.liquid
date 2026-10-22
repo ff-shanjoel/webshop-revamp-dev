@@ -1,0 +1,241 @@
+{%- liquid
+  assign s = section.settings
+  assign ship_text = ''
+  if s.show_delivery
+    assign ship_text = s.ship_text
+  endif
+  assign phone_href = s.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+-%}
+
+{{ 'fsg-pages.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+<section class="fsg fsg-plp fsg-search-page" data-fsg-plp>
+  <div class="fsg-wrap">
+    <nav class="fsg-crumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
+      <span aria-current="page">Search</span>
+    </nav>
+
+    <header class="fsg-plp__head">
+      <h1 class="fsg-plp__title">
+        {%- if search.performed -%}
+          Results for “{{ search.terms | escape }}”
+        {%- else -%}
+          {{ s.heading }}
+        {%- endif -%}
+      </h1>
+      {%- if search.performed -%}
+        <p class="fsg-plp__count">
+          {{ search.results_count }}
+          {% if search.results_count == 1 %}result{% else %}results{% endif %}
+        </p>
+      {%- endif -%}
+    </header>
+
+    {%- comment -%} Search again {%- endcomment -%}
+    <form action="{{ routes.search_url }}" method="get" role="search" class="fsg-search-page__form">
+      <label class="visually-hidden" for="FsgSearchPage">Search</label>
+      <input
+        id="FsgSearchPage"
+        class="fsg-search-page__input"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ s.placeholder | escape }}"
+        autocomplete="off"
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="submit" class="fsg-btn fsg-btn--primary">
+        {% render 'fsg-icon', icon: 'search', size: 18 %}
+        Search
+      </button>
+    </form>
+
+    {%- if search.performed and search.results_count > 0 -%}
+      {%- render 'fsg-facets', results: search, action: routes.search_url, query: search.terms -%}
+
+      {%- paginate search.results by s.per_page -%}
+        {%- liquid
+          assign product_count = 0
+          for item in search.results
+            if item.object_type == 'product'
+              assign product_count = product_count | plus: 1
+            endif
+          endfor
+        -%}
+        {%- if product_count > 0 -%}
+          <ul class="fsg-plp__grid" role="list">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                <li>
+                  {% render 'fsg-product-card',
+                    card_product: item,
+                    section_id: section.id,
+                    badge: 'In stock',
+                    show_vendor: true,
+                    ship_text: ship_text,
+                    mto_tag: s.mto_tag
+                  %}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if product_count < search.results.size -%}
+          <div class="fsg-search-page__other">
+            <h2 class="fsg-h3">Pages &amp; guides</h2>
+            <ul class="fsg-search-page__links" role="list">
+              {%- for item in search.results -%}
+                {%- if item.object_type != 'product' -%}
+                  <li>
+                    <a href="{{ item.url }}">
+                      <strong>{{ item.title | escape }}</strong>
+                      {%- assign excerpt = item.excerpt_or_content | default: item.content | strip_html | truncatewords: 24 -%}
+                      {%- if excerpt != blank -%}<span>{{ excerpt }}</span>{%- endif -%}
+                    </a>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="fsg-pages" aria-label="Pagination">
+            {%- if paginate.previous -%}
+              <a href="{{ paginate.previous.url }}" aria-label="Previous page">‹</a>
+            {%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a href="{{ part.url }}">{{ part.title }}</a>
+              {%- elsif part.title == paginate.current_page -%}
+                <span aria-current="page">{{ part.title }}</span>
+              {%- else -%}
+                <span>{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}
+              <a href="{{ paginate.next.url }}" aria-label="Next page">›</a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      {%- comment -%} No results (or no search yet): help people find their way {%- endcomment -%}
+      {%- if search.performed -%}
+        <div class="fsg-search-page__none">
+          <span class="fsg-search-page__none-icon">{% render 'fsg-icon', icon: 'search', size: 26 %}</span>
+          <div>
+            <strong>No products match “{{ search.terms | escape }}”</strong>
+            <p>Check the spelling, try a shorter word like “mat” or “trim”, or browse a category below.</p>
+          </div>
+          {%- if s.phone != blank -%}
+            <a href="tel:{{ phone_href }}" class="fsg-btn fsg-btn--outline">
+              {% render 'fsg-icon', icon: 'phone', size: 17 %}
+              Call {{ s.phone }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if s.menu != blank -%}
+        <div class="fsg-search-page__browse">
+          <h2 class="fsg-h3">{{ s.browse_heading }}</h2>
+          <ul class="fsg-tiles__grid fsg-search-page__grid" role="list">
+            {%- assign tile_count = 0 -%}
+            {%- for link in s.menu.links -%}
+              {%- for child in link.links -%}
+                {%- if child.type != 'collection_link' or child.object.products_count == 0 -%}{%- continue -%}{%- endif -%}
+                {%- if tile_count >= s.browse_limit -%}{%- break -%}{%- endif -%}
+                {%- assign tile_count = tile_count | plus: 1 -%}
+                <li>{% render 'fsg-collection-tile', collection: child.object, title: child.title %}</li>
+              {%- endfor -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FSG search results",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading before searching",
+      "default": "Search our products"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Search box placeholder",
+      "default": "Search mats, trims, cleaners…"
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Results per page",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "show_delivery",
+      "label": "Show delivery line on product cards",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "ship_text",
+      "label": "Delivery line",
+      "default": "Delivery in 2–3 working days"
+    },
+    {
+      "type": "text",
+      "id": "mto_tag",
+      "label": "Made-to-order product tag",
+      "default": "Logo Mats"
+    },
+    {
+      "type": "header",
+      "content": "No results"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "(085) 1234 899"
+    },
+    {
+      "type": "text",
+      "id": "browse_heading",
+      "label": "Categories heading",
+      "default": "Browse by category"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Categories from menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "range",
+      "id": "browse_limit",
+      "label": "Categories to show",
+      "min": 4,
+      "max": 16,
+      "step": 4,
+      "default": 8
+    }
+  ]
+}
+{% endschema %}

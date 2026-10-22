@@ -1,0 +1,161 @@
+{% comment %}
+  Filter dropdowns, sort and active-filter tags for collection and search pages.
+  Uses Shopify storefront filters (set them up in the Search & Discovery app).
+
+  Accepts:
+  - results: {Object} collection or search object
+  - action: {String} form action URL (collection.url or routes.search_url)
+  - query: {String} search terms to keep when filtering (optional)
+
+  Usage:
+  {% render 'fsg-facets', results: collection, action: collection.url %}
+{% endcomment %}
+<form class="fsg-plp__form" action="{{ action }}" method="get" data-fsg-filter-form>
+  {%- if query != blank -%}
+    <input type="hidden" name="q" value="{{ query | escape }}">
+    <input type="hidden" name="options[prefix]" value="last">
+  {%- endif -%}
+  <div class="fsg-toolbar">
+    <div class="fsg-filters">
+      {%- for filter in results.filters -%}
+        {%- liquid
+          assign active_count = filter.active_values.size
+          if filter.type == 'price_range'
+            assign active_count = 0
+            if filter.min_value.value != null or filter.max_value.value != null
+              assign active_count = 1
+            endif
+          endif
+        -%}
+        <details class="fsg-filter" data-fsg-filter>
+          <summary>
+            {{ filter.label | escape }}
+            {%- if active_count > 0 -%}
+              <span class="fsg-filter__count">{{ active_count }}</span>
+            {%- endif -%}
+            {% render 'fsg-icon', icon: 'chevron-down', size: 15 %}
+          </summary>
+          <div class="fsg-filter__panel">
+            {%- case filter.type -%}
+              {%- when 'price_range' -%}
+                <div class="fsg-filter__price">
+                  <label>
+                    From €
+                    <input
+                      type="number"
+                      name="{{ filter.min_value.param_name }}"
+                      value="{% if filter.min_value.value %}{{ filter.min_value.value | money_without_currency | remove: ',' }}{% endif %}"
+                      placeholder="0"
+                      min="0"
+                      inputmode="decimal"
+                    >
+                  </label>
+                  <label>
+                    To €
+                    <input
+                      type="number"
+                      name="{{ filter.max_value.param_name }}"
+                      value="{% if filter.max_value.value %}{{ filter.max_value.value | money_without_currency | remove: ',' }}{% endif %}"
+                      placeholder="{{ filter.range_max | money_without_currency | remove: ',' }}"
+                      min="0"
+                      inputmode="decimal"
+                    >
+                  </label>
+                  <button type="submit" class="fsg-btn fsg-btn--primary fsg-btn--sm fsg-filter__apply">Apply</button>
+                </div>
+              {%- else -%}
+                {%- for value in filter.values -%}
+                  <label class="fsg-filter__opt{% if value.count == 0 and value.active == false %} is-disabled{% endif %}">
+                    <input
+                      type="checkbox"
+                      name="{{ value.param_name }}"
+                      value="{{ value.value }}"
+                      {% if value.active %}
+                        checked
+                      {% endif %}
+                      data-fsg-autosubmit
+                    >
+                    <span>{{ value.label | escape }}</span>
+                    <small>{{ value.count }}</small>
+                  </label>
+                {%- endfor -%}
+            {%- endcase -%}
+          </div>
+        </details>
+      {%- endfor -%}
+    </div>
+
+    <label class="fsg-sort">
+      Sort by
+      <select name="sort_by" data-fsg-autosubmit>
+        {%- assign sort_by = results.sort_by | default: results.default_sort_by -%}
+        {%- for option in results.sort_options -%}
+          <option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected{% endif %}>
+            {{- option.name | escape -}}
+          </option>
+        {%- endfor -%}
+      </select>
+    </label>
+  </div>
+
+  {%- liquid
+    assign has_active = false
+    for filter in results.filters
+      if filter.active_values.size > 0
+        assign has_active = true
+      endif
+      if filter.type == 'price_range'
+        if filter.min_value.value != null or filter.max_value.value != null
+          assign has_active = true
+        endif
+      endif
+    endfor
+  -%}
+  {%- if has_active -%}
+    <div class="fsg-active">
+      {%- for filter in results.filters -%}
+        {%- for value in filter.active_values -%}
+          <a href="{{ value.url_to_remove }}">
+            {{ value.label | escape }}
+            {% render 'fsg-icon', icon: 'close', size: 13 %}
+          </a>
+        {%- endfor -%}
+        {%- if filter.type == 'price_range' -%}
+          {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+            <a href="{{ filter.url_to_remove }}">
+              {{ filter.min_value.value | default: 0 | money }} – {{ filter.max_value.value | default: filter.range_max | money }}
+              {% render 'fsg-icon', icon: 'close', size: 13 %}
+            </a>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      <a href="{{ action }}?{% if query != blank %}q={{ query | url_encode }}&{% endif %}sort_by={{ sort_by }}" class="fsg-active__clear">Clear all</a>
+    </div>
+  {%- endif -%}
+</form>
+
+<script>
+  (() => {
+    const form = document.currentScript.previousElementSibling;
+    const page = form.closest('[data-fsg-plp]');
+    // Submit straight away when a filter or the sort order changes; drop empty price fields from the URL.
+    form.addEventListener('change', (e) => {
+      if (!e.target.matches('[data-fsg-autosubmit]')) return;
+      page?.classList.add('is-loading');
+      form.requestSubmit();
+    });
+    form.addEventListener('submit', () => {
+      form.querySelectorAll('input[type="number"]').forEach((i) => {
+        if (i.value === '') i.disabled = true;
+      });
+    });
+    // One dropdown open at a time; clicking elsewhere closes them.
+    const filters = [...form.querySelectorAll('[data-fsg-filter]')];
+    filters.forEach((d) =>
+      d.addEventListener('toggle', () => d.open && filters.forEach((o) => o !== d && (o.open = false)))
+    );
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('[data-fsg-filter]')) filters.forEach((d) => (d.open = false));
+    });
+  })();
+</script>
