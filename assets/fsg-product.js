@@ -43,7 +43,8 @@
           min === max ? fmt(to, true) : `${fmt(from, !sameMonth)} – ${fmt(to, true)}`;
       }
       if (cutoffLine && countdown) {
-        if (beforeCutoff) {
+        // The same-day dispatch countdown only makes sense for stock items.
+        if (beforeCutoff && min <= 5) {
           const end = new Date(now);
           end.setHours(cutoff, 0, 0, 0);
           const mins = Math.max(0, Math.round((end - now) / 60000));
@@ -100,6 +101,13 @@
     const data = JSON.parse(root.querySelector('[data-fsg-product-json]').textContent);
     const showMedia = initGallery(root);
     const delivery = root.querySelector('[data-fsg-delivery]');
+    // Tidy the description; if it states a lead time, use it for the delivery estimate.
+    const details = root.querySelector('[data-fsg-details]');
+    const lead = details && window.FsgDetails ? window.FsgDetails.enhance(details) : null;
+    if (delivery && lead) {
+      delivery.dataset.min = lead.leadMin;
+      delivery.dataset.max = lead.leadMax;
+    }
     if (delivery) initDelivery(delivery);
 
     const form = root.querySelector('form[data-type="add-to-cart-form"]');

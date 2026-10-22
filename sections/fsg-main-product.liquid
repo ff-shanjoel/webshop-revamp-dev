@@ -32,6 +32,7 @@
 
 {{ 'fsg-pages.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'fsg-product-details.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'fsg-product.js' | asset_url }}" defer="defer"></script>
 
 <section class="fsg fsg-pdp" data-fsg-product data-section="{{ section.id }}" data-url="{{ product.url }}">
@@ -287,7 +288,7 @@
           Product details
           <span class="fsg-acc__icon" aria-hidden="true">{% render 'fsg-icon', icon: 'plus', size: 18 %}</span>
         </summary>
-        <div class="fsg-rte fsg-acc__body">
+        <div class="fsg-rte fsg-acc__body" data-fsg-details>
           {{- product.description | default: '<p>More details coming soon. Call us if you have any questions.</p>' -}}
         </div>
       </details>
