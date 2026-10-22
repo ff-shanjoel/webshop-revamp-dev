@@ -51,6 +51,16 @@
             | image_url: width: logo_2x
             | image_tag: style: logo_style, alt: shop.name, loading: 'lazy'
           }}
+        {%- elsif section.settings.use_theme_logo -%}
+          {%- assign logo_style = 'width:' | append: section.settings.logo_width | append: 'px' -%}
+          <img
+            src="{{ 'fsg-logo-light.png' | asset_url }}"
+            alt="{{ shop.name | escape }}"
+            width="800"
+            height="134"
+            style="{{ logo_style }}"
+            loading="lazy"
+          >
         {%- else -%}
           <span class="fsg-logo__mark" aria-hidden="true">{{ section.settings.logo_mark }}</span>
           <span class="fsg-logo__text">
@@ -209,7 +219,14 @@
       "type": "image_picker",
       "id": "logo",
       "label": "Logo",
-      "info": "Use a light version for the dark footer. Leave empty for the text logo."
+      "info": "Optional. Leave empty to use the theme logo file."
+    },
+    {
+      "type": "checkbox",
+      "id": "use_theme_logo",
+      "label": "Use the theme logo file",
+      "info": "assets/fsg-logo-light.png (white version for the dark footer).",
+      "default": true
     },
     {
       "type": "range",
@@ -219,7 +236,7 @@
       "max": 300,
       "step": 5,
       "unit": "px",
-      "default": 160
+      "default": 200
     },
     {
       "type": "text",

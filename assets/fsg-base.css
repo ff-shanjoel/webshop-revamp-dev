@@ -325,7 +325,8 @@
   color: var(--fsg-ink);
 }
 .fsg-logo img {
-  width: auto;
+  max-width: 100%;
+  height: auto;
   max-height: 52px;
 }
 .fsg-logo__mark {
