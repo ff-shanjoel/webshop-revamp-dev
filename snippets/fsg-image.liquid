@@ -10,6 +10,7 @@
   - class: {String} class for the img (optional)
   - alt: {String} alt text override (optional)
   - eager: {Boolean} load eagerly, for above-the-fold images (optional)
+  - position: {String} object-position such as 'top' or 'left'; 'auto' uses the image focal point set in Shopify (optional)
 
   Usage:
   {% render 'fsg-image', image: section.settings.image, product: section.settings.fallback_product, photo: 3 %}
@@ -28,6 +29,12 @@
   if eager
     assign loading = 'eager'
   endif
+  assign pos_style = ''
+  if position != blank and position != 'auto'
+    assign pos_style = 'object-position: ' | append: position
+  elsif img.presentation.focal_point != blank
+    assign pos_style = 'object-position: ' | append: img.presentation.focal_point
+  endif
 -%}
 {%- if img != blank -%}
   {%- assign alt_text = alt | default: img.alt | default: product.title | escape -%}
@@ -39,6 +46,7 @@
       sizes: sizes,
       loading: loading,
       class: class,
+      style: pos_style,
       alt: alt_text
   }}
 {%- else -%}

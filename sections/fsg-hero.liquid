@@ -16,6 +16,7 @@
           product: s.fallback_product,
           photo: s.fallback_photo,
           sizes: '(min-width: 1320px) 1280px, 100vw',
+          position: s.image_position,
           eager: true
         %}
       </div>
@@ -87,6 +88,21 @@
       "max": 10,
       "step": 1,
       "default": 1
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Photo focus",
+      "info": "Which part of the photo stays visible in the wide banner. Automatic uses the focal point set on the image in Shopify.",
+      "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Automatic" },
+        { "value": "center", "label": "Centre" },
+        { "value": "top", "label": "Top" },
+        { "value": "bottom", "label": "Bottom" },
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ]
     },
     {
       "type": "range",

@@ -43,8 +43,8 @@
         "b4"
       ],
       "settings": {
-        "fallback_product": "munster-clare-for-recess",
-        "fallback_photo": 3,
+        "fallback_product": "smart-aluclick-12mm-mat",
+        "fallback_photo": 1,
         "image_opacity": 55,
         "min_height": 440,
         "eyebrow": "Ireland's floor specialists",
@@ -54,7 +54,8 @@
         "button_link": "shopify://collections/secondary-textile-mats-for-recess",
         "button_2_label": "Get a quote",
         "padding_top": 24,
-        "padding_bottom": 48
+        "padding_bottom": 48,
+        "image_position": "auto"
       }
     },
     "tiles": {
