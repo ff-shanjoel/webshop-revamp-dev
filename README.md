@@ -15,6 +15,7 @@ and simple, few steps from browsing to checkout).
 - [Environments and branches](#environments-and-branches)
 - [Getting started (local development)](#getting-started-local-development)
 - [Deployment workflow](#deployment-workflow)
+- [Updating Dawn](#updating-dawn)
 - [Project structure](#project-structure)
 - [Conventions](#conventions)
 - [Store content the theme relies on](#store-content-the-theme-relies-on)
@@ -115,6 +116,130 @@ DEV, test, then merge.
 
 - Fastest: publish the previous theme (Fashionopolism or a duplicate) in Online Store → Themes.
 - In code: `git revert <commit>` on `master` and push; Shopify syncs the revert to the live theme.
+
+---
+
+## Updating Dawn
+
+Shopify releases new Dawn versions a few times a year (bug fixes, accessibility, support for new
+Shopify features). **They are not applied automatically** to this theme: a theme connected to
+GitHub and customised like this one never gets Theme Store updates. We bring them in ourselves,
+on a branch, and test before anything reaches `dev` or `master`.
+
+### Why this is safe
+
+- Everything custom is in **separate `fsg-` files**, which Dawn never touches, so updates can't
+  overwrite our design.
+- We keep a branch called **`dawn-upstream`** that contains **only stock Dawn**. Git compares old
+  stock Dawn, new stock Dawn and our theme (a three-way merge), so Dawn's changes are applied
+  everywhere **except** where we changed the same lines. Those few places are flagged as
+  conflicts for a person to decide.
+- The only Dawn files we have changed are listed below, so you know in advance where to look.
+
+### Dawn files we have changed (expect conflicts only here)
+
+| File | What we changed | When it conflicts |
+|---|---|---|
+| `layout/theme.liquid` | 4 hooks: `{% render 'fsg-favicon' %}` (replaces Dawn's favicon block), `fsg-theme.js` after `global.js`, and `fsg-tokens` + `fsg-base.css` + `fsg-sections.css` after `base.css` | Take Dawn's new file, then re-add these 4 hooks |
+| `config/settings_schema.json` | Appended the **FSG design** settings group at the end | Take Dawn's file and append the FSG design group again |
+| `config/settings_data.json` | The store's theme settings (written by Shopify) | **Always keep ours** |
+| `sections/header-group.json`, `sections/footer-group.json` | Use `fsg-header` / `fsg-footer` | **Always keep ours** |
+| `templates/*.json` | Use our `fsg-` sections | **Always keep ours** |
+| `templates/gift_card.liquid` | Fully redesigned | Keep ours; copy over any new Dawn feature by hand |
+
+Project files (`README.md`, `LICENSE.md`, `release-notes.md`, `.gitignore`, `.theme-check.yml`,
+`.prettierrc.json`) are never touched by an update, because only Dawn's theme folders are copied.
+
+### One-time setup
+
+Do this once. The repository's first commit, `d4578e3`, is stock Dawn 16.0.0. Its theme folders
+were checked file-for-file against Shopify's official `v16.0.0` tag, so it is the correct starting point:
+
+```bash
+git remote add dawn https://github.com/Shopify/dawn.git
+git branch dawn-upstream d4578e3
+git push origin dawn-upstream
+```
+
+`dawn-upstream` is **not** connected to any Shopify theme. Never commit our own work to it.
+
+### Updating, step by step
+
+Replace `v17.0.0` with the Dawn version you are installing.
+
+1. **Read the release notes** at <https://github.com/Shopify/dawn/releases> for every version
+   between ours and the new one. Note anything about the cart, product form, predictive search or
+   cart page (see *What to test* below).
+2. **Start from an up-to-date `dev`**:
+   ```bash
+   git checkout dev
+   git pull
+   ```
+3. **Put the new stock Dawn on `dawn-upstream`**. This copies Dawn's **theme folders** exactly
+   (Dawn's repository also has its own README, licence and GitHub workflows, which we don't want):
+   ```bash
+   git fetch dawn --tags
+   git checkout dawn-upstream
+   git rm -r -q assets config layout locales sections snippets templates
+   git checkout v17.0.0 -- assets config layout locales sections snippets templates
+   git commit -m "Dawn v17.0.0"
+   git push origin dawn-upstream
+   ```
+   If a new Dawn version adds a theme folder (for example `blocks`), check with
+   `git ls-tree --name-only v17.0.0` and add it to both commands.
+4. **Merge it into a new update branch**, not straight into `dev`:
+   ```bash
+   git checkout dev
+   git checkout -b dawn-update-v17
+   git merge dawn-upstream
+   ```
+5. **Resolve conflicts** (`git status` lists them):
+   - Files marked *Always keep ours* in the table above:
+     ```bash
+     git checkout --ours config/settings_data.json sections/header-group.json sections/footer-group.json templates/
+     ```
+   - `layout/theme.liquid` and `config/settings_schema.json`: open each conflict and keep **both**
+     sides where you can (Dawn's new lines **and** our hooks). Example:
+     ```
+     <<<<<<< HEAD
+         {% render 'fsg-favicon' %}
+     =======
+         {%- if settings.favicon != blank -%} … Dawn's new favicon code … {%- endif -%}
+     >>>>>>> dawn-upstream
+     ```
+     Keep `{% render 'fsg-favicon' %}`, and if Dawn's version has an improvement (say a new icon
+     size), copy it into `snippets/fsg-favicon.liquid`.
+   - Then finish the merge:
+     ```bash
+     git add -A
+     git commit
+     ```
+6. **Check and test locally**:
+   ```bash
+   shopify theme check
+   shopify theme dev --store theflooringspecialistgroup.myshopify.com
+   ```
+   Work through *What to test* below on desktop and mobile.
+7. **Ship it like any other change**: merge `dawn-update-v17` into `dev`, push, test on
+   TFSG – DEV, then merge to `master` (see [Deployment workflow](#deployment-workflow)).
+   Note the Dawn version in `release-notes.md`, and update "Built on Dawn X" at the top of this file.
+
+If an update goes badly, simply delete the `dawn-update-…` branch. `dev` and `master` are untouched
+until you merge.
+
+### What to test after an update
+
+Our `fsg-` code relies on a few pieces of Dawn. These are where an update is most likely to break
+something, even when the merge is clean:
+
+| Our feature | Relies on Dawn's | Check |
+|---|---|---|
+| Add to basket (product page, product cards) | `assets/product-form.js` and its `<product-form>` markup | Add a product with options and one without; the cart badge updates |
+| Cart popup and badge | `assets/cart-notification.js`, `sections/cart-icon-bubble.liquid` (our header copies its markup) | Popup appears after adding; badge count is right |
+| Cart page | `sections/main-cart-items.liquid`, `main-cart-footer.liquid`, `assets/cart.js` (`fsg-cart.css` styles their classes) | Change quantity, remove an item, empty cart, checkout button |
+| Search dropdown | `assets/predictive-search.js` and `sections/predictive-search.liquid` (`fsg-base.css` styles their classes) | Type a word: suggestions and products with prices appear |
+| Filters and sort | Shopify filter objects (not Dawn) | Apply a filter and sort on a collection and on search |
+| General | `assets/global.js`, `base.css` helpers (`.hidden`, `.visually-hidden`), locale keys | No console errors; text is not showing as "translation missing" |
 
 ---
 
@@ -220,9 +345,8 @@ shopify theme check
 Also check by hand on the local preview: homepage, a collection, a product with options
 (add to cart), cart, search, and one page on a phone-sized screen.
 
-> Note: `.theme-check.yml` in this repository currently contains CSS from the original theme
-> export instead of theme-check configuration, which makes `shopify theme check` fail to start.
-> Replace it with a valid config (or delete it) to use the command.
+`.theme-check.yml` uses Shopify's recommended checks. The remaining warnings are all in Dawn's
+untouched stock files; `fsg-` files should always come back clean.
 
 ---
 
