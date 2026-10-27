@@ -1,0 +1,10 @@
+{% comment %}
+  Browser and home-screen icons. A favicon uploaded in Theme settings wins;
+  otherwise the FSC mark from assets/fsg-favicon.png is used.
+{% endcomment %}
+{%- if settings.favicon != blank -%}
+  <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+{%- else -%}
+  <link rel="icon" type="image/png" sizes="192x192" href="{{ 'fsg-favicon.png' | asset_url }}">
+{%- endif -%}
+<link rel="apple-touch-icon" href="{{ 'fsg-apple-touch-icon.png' | asset_url }}">

@@ -1,0 +1,578 @@
+{%- liquid
+  assign menu = section.settings.menu
+  assign phone = section.settings.phone
+  assign phone_href = phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+  assign email = section.settings.email
+  assign logo_width = section.settings.logo_width
+-%}
+
+{%- if settings.cart_type == 'notification' -%}
+  {{ 'component-cart-notification.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+<div class="fsg fsg-header" data-fsg-header>
+  {%- comment -%} Utility bar {%- endcomment -%}
+  {%- assign messages = section.blocks | where: 'type', 'message' -%}
+  {%- if messages.size > 0 or section.settings.util_menu != blank -%}
+    <div class="fsg-util">
+      <div class="fsg-wrap fsg-util__inner">
+        <ul class="fsg-util__msgs">
+          {%- for block in messages -%}
+            <li class="fsg-util__msg" {{ block.shopify_attributes }}>
+              {%- if block.settings.icon != 'none' -%}
+                {% render 'fsg-icon', icon: block.settings.icon, size: 15 %}
+              {%- endif -%}
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+              {%- else -%}
+                <span>{{ block.settings.text }}</span>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+        {%- if section.settings.util_menu != blank -%}
+          <nav class="fsg-util__links" aria-label="{{ section.settings.util_menu.title | escape }}">
+            {%- for link in section.settings.util_menu.links -%}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            {%- endfor -%}
+          </nav>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Main row {%- endcomment -%}
+  <div class="fsg-head">
+    <div class="fsg-wrap fsg-head__inner">
+      <button
+        type="button"
+        class="fsg-head__burger"
+        data-fsg-drawer-open
+        aria-controls="FsgDrawer-{{ section.id }}"
+        aria-expanded="false"
+        aria-label="{{ 'sections.header.menu' | t }}"
+      >
+        {% render 'fsg-icon', icon: 'menu', size: 24 %}
+      </button>
+
+      {%- capture logo -%}
+        {%- if section.settings.logo != blank -%}
+          {%- liquid
+            assign logo_2x = logo_width | times: 2
+            assign logo_height = section.settings.logo.height | times: logo_width | divided_by: section.settings.logo.width
+            assign logo_style = 'width:' | append: logo_width | append: 'px'
+          -%}
+          {{
+            section.settings.logo
+            | image_url: width: logo_2x
+            | image_tag: width: logo_width, height: logo_height, style: logo_style, alt: shop.name, loading: 'eager'
+          }}
+        {%- elsif section.settings.use_theme_logo -%}
+          {%- assign logo_style = 'width:' | append: logo_width | append: 'px' -%}
+          <img
+            src="{{ 'fsg-logo-dark.png' | asset_url }}"
+            alt="{{ shop.name | escape }}"
+            width="800"
+            height="134"
+            style="{{ logo_style }}"
+            loading="eager"
+          >
+        {%- else -%}
+          <span class="fsg-logo__mark" aria-hidden="true">{{ section.settings.logo_mark }}</span>
+          <span class="fsg-logo__text">
+            <span class="fsg-logo__name">{{ section.settings.logo_name | default: shop.name }}</span>
+            {%- if section.settings.tagline != blank -%}
+              <span class="fsg-logo__tag">{{ section.settings.tagline }}</span>
+            {%- endif -%}
+          </span>
+        {%- endif -%}
+      {%- endcapture -%}
+
+      <a href="{{ routes.root_url }}" class="fsg-logo">{{ logo }}</a>
+
+      {%- if section.settings.show_search -%}
+        <div class="fsg-search">
+          {%- if settings.predictive_search_enabled -%}
+            <predictive-search data-loading-text="{{ 'accessibility.loading' | t }}">
+          {%- else -%}
+            <search-form>
+          {%- endif -%}
+          <form action="{{ routes.search_url }}" method="get" role="search" class="fsg-search__form">
+            <label class="visually-hidden" for="FsgSearch-{{ section.id }}">{{ 'general.search.search' | t }}</label>
+            <input
+              class="fsg-search__input"
+              id="FsgSearch-{{ section.id }}"
+              type="search"
+              name="q"
+              value="{{ search.terms | escape }}"
+              placeholder="{{ section.settings.search_placeholder | escape }}"
+              {%- if settings.predictive_search_enabled %}
+                role="combobox"
+                aria-expanded="false"
+                aria-owns="predictive-search-results"
+                aria-controls="predictive-search-results"
+                aria-haspopup="listbox"
+                aria-autocomplete="list"
+                autocorrect="off"
+                autocomplete="off"
+                autocapitalize="off"
+                spellcheck="false"
+              {%- endif %}
+            >
+            <input type="hidden" name="options[prefix]" value="last">
+            <button type="reset" class="hidden" tabindex="-1" aria-hidden="true"></button>
+            <button type="submit" class="fsg-search__btn" aria-label="{{ 'general.search.search' | t }}">
+              {% render 'fsg-icon', icon: 'search', size: 19 %}
+            </button>
+            {%- if settings.predictive_search_enabled -%}
+              <div class="predictive-search predictive-search--header" tabindex="-1" data-predictive-search>
+                {%- render 'loading-spinner', class: 'predictive-search__loading-state' -%}
+              </div>
+              <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
+            {%- endif -%}
+          </form>
+          {%- if settings.predictive_search_enabled -%}
+            </predictive-search>
+          {%- else -%}
+            </search-form>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div class="fsg-head__actions">
+        {%- if phone != blank -%}
+          <a href="tel:{{ phone_href }}" class="fsg-call">
+            <span class="fsg-call__icon">{% render 'fsg-icon', icon: 'phone', size: 18 %}</span>
+            <span class="fsg-call__text">
+              <small>{{ section.settings.phone_label }}</small>
+              <strong>{{ phone }}</strong>
+            </span>
+            <span class="visually-hidden">{{ section.settings.phone_label }} {{ phone }}</span>
+          </a>
+        {%- endif -%}
+
+        {%- if shop.customer_accounts_enabled -%}
+          <a
+            href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+            class="fsg-icon-btn fsg-head__account"
+            rel="nofollow"
+          >
+            {% render 'fsg-icon', icon: 'user', size: 23 %}
+            <span class="visually-hidden">
+              {%- liquid
+                if customer
+                  echo 'customer.account.title' | t
+                else
+                  echo 'customer.log_in' | t
+                endif
+              -%}
+            </span>
+          </a>
+        {%- endif -%}
+
+        {%- comment -%}
+          Dawn's cart drawer / notification re-renders this element's inner HTML
+          from sections/cart-icon-bubble.liquid, so the markup below mirrors it.
+        {%- endcomment -%}
+        <a href="{{ routes.cart_url }}" class="fsg-icon-btn" id="cart-icon-bubble">
+          {%- if cart == empty -%}
+            <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
+          {%- else -%}
+            <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
+          {%- endif -%}
+          <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+          {%- if cart != empty -%}
+            <div class="cart-count-bubble">
+              {%- if cart.item_count < 100 -%}
+                <span aria-hidden="true">{{ cart.item_count }}</span>
+              {%- endif -%}
+              <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+            </div>
+          {%- endif -%}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Category bar + mega menu {%- endcomment -%}
+  {%- if menu != blank -%}
+    <nav class="fsg-cats" aria-label="{{ menu.title | escape }}">
+      <div class="fsg-wrap">
+        <ul class="fsg-cats__list" role="list">
+          {%- for link in menu.links -%}
+            {%- liquid
+              assign has_mega = false
+              if link.links.size > 0
+                assign has_mega = true
+              endif
+              assign is_accent = false
+              if section.settings.accent_item != blank and link.title == section.settings.accent_item
+                assign is_accent = true
+              endif
+            -%}
+            <li class="fsg-cats__item{% if has_mega %} has-mega{% endif %}{% if is_accent %} fsg-cats__item--accent{% endif %}">
+              <a
+                href="{{ link.url }}"
+                class="fsg-cats__link"
+                {% if link.current %}
+                  aria-current="page"
+                {% endif %}
+                {% if has_mega %}
+                  aria-haspopup="true" aria-expanded="false"
+                {% endif %}
+              >
+                {{- link.title | escape -}}
+                {%- if has_mega -%}
+                  {% render 'fsg-icon', icon: 'chevron-down', size: 15 %}
+                {%- endif -%}
+              </a>
+
+              {%- if has_mega -%}
+                {%- liquid
+                  assign has_l3 = false
+                  for child in link.links
+                    if child.links.size > 0
+                      assign has_l3 = true
+                      break
+                    endif
+                  endfor
+                -%}
+                <div class="fsg-mega">
+                  <div class="fsg-wrap fsg-mega__inner">
+                    {%- if has_l3 -%}
+                      {%- comment -%} 3-level menu: subcategory list on the left, its ranges on the right {%- endcomment -%}
+                      <div class="fsg-mega__split" data-fsg-split>
+                        <ul class="fsg-mega__nav" role="list">
+                          {%- for child in link.links -%}
+                            <li>
+                              <a
+                                href="{{ child.url }}"
+                                class="fsg-mega__nav-link{% if forloop.first %} is-active{% endif %}"
+                                data-fsg-pane="{{ forloop.index0 }}"
+                              >
+                                {{- child.title | escape -}}
+                                {%- if child.links.size > 0 -%}
+                                  {% render 'fsg-icon', icon: 'chevron-right', size: 16 %}
+                                {%- endif -%}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                        <div class="fsg-mega__panes">
+                          {%- for child in link.links -%}
+                            <div class="fsg-mega__pane{% if forloop.first %} is-active{% endif %}" data-fsg-panel="{{ forloop.index0 }}">
+                              <div class="fsg-mega__head">
+                                <strong>{{ child.title | escape }}</strong>
+                                <a href="{{ child.url }}" class="fsg-mega__all">
+                                  {{- section.settings.view_all_label }}
+                                  {% render 'fsg-icon', icon: 'arrow-right', size: 15 -%}
+                                </a>
+                              </div>
+                              <ul class="fsg-mega__tiles" role="list">
+                                {%- if child.links.size > 0 -%}
+                                  {%- for grandchild in child.links -%}
+                                    <li>{% render 'fsg-mega-tile', link: grandchild %}</li>
+                                  {%- endfor -%}
+                                {%- else -%}
+                                  <li>{% render 'fsg-mega-tile', link: child %}</li>
+                                {%- endif -%}
+                              </ul>
+                            </div>
+                          {%- endfor -%}
+                        </div>
+                      </div>
+                    {%- else -%}
+                      {%- comment -%} 2-level menu: every subcategory as a photo tile {%- endcomment -%}
+                      <div class="fsg-mega__head">
+                        <strong>{{ link.title | escape }}</strong>
+                        <a href="{{ link.url }}" class="fsg-mega__all">
+                          {{- section.settings.view_all_label }}
+                          {% render 'fsg-icon', icon: 'arrow-right', size: 15 -%}
+                        </a>
+                      </div>
+                      <ul class="fsg-mega__tiles" role="list">
+                        {%- for child in link.links -%}
+                          <li>{% render 'fsg-mega-tile', link: child %}</li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                  </div>
+                  {%- if section.settings.help_heading != blank and phone != blank -%}
+                    <div class="fsg-mega__foot">
+                      <div class="fsg-wrap">
+                        {% render 'fsg-icon', icon: 'chat', size: 16 %}
+                        <span>{{ section.settings.help_heading }}</span>
+                        <a href="tel:{{ phone_href }}">{{ phone }}</a>
+                        {%- if email != blank -%}
+                          <span aria-hidden="true">·</span>
+                          <a href="mailto:{{ email }}">{{ email }}</a>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </nav>
+  {%- endif -%}
+
+  {%- comment -%} Mobile drawer {%- endcomment -%}
+  <div class="fsg-drawer" id="FsgDrawer-{{ section.id }}" aria-hidden="true">
+    <div class="fsg-drawer__overlay" data-fsg-drawer-close></div>
+    <div class="fsg-drawer__panel" role="dialog" aria-modal="true" aria-label="{{ 'sections.header.menu' | t }}">
+      <div class="fsg-drawer__top">
+        <strong>{{ 'sections.header.menu' | t }}</strong>
+        <button type="button" class="fsg-drawer__close" data-fsg-drawer-close aria-label="{{ 'accessibility.close' | t }}">
+          {% render 'fsg-icon', icon: 'close', size: 20 %}
+        </button>
+      </div>
+      <div class="fsg-drawer__body">
+        {%- if menu != blank -%}
+          <ul class="fsg-drawer__nav" role="list">
+            {%- for link in menu.links -%}
+              <li>
+                {%- if link.links.size > 0 -%}
+                  <details>
+                    <summary>
+                      {{- link.title | escape -}}
+                      {% render 'fsg-icon', icon: 'chevron-down', size: 18 %}
+                    </summary>
+                    <ul class="fsg-drawer__sub" role="list">
+                      {%- for child in link.links -%}
+                        <li>
+                          <a href="{{ child.url }}" class="fsg-drawer__l2">{{ child.title | escape }}</a>
+                          {%- if child.links.size > 0 -%}
+                            <ul role="list">
+                              {%- for grandchild in child.links -%}
+                                <li>
+                                  <a href="{{ grandchild.url }}">{{ grandchild.title | escape }}</a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          {%- endif -%}
+                        </li>
+                      {%- endfor -%}
+                      <li>
+                        <a href="{{ link.url }}" class="fsg-drawer__l2">
+                          {{- section.settings.view_all_label }}
+                          {{ link.title | escape -}}
+                        </a>
+                      </li>
+                    </ul>
+                  </details>
+                {%- else -%}
+                  <a href="{{ link.url }}" class="fsg-drawer__l1">{{ link.title | escape }}</a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        <div class="fsg-drawer__contact">
+          {%- if phone != blank -%}
+            <a href="tel:{{ phone_href }}">{% render 'fsg-icon', icon: 'phone', size: 18 %} {{ phone }}</a>
+          {%- endif -%}
+          {%- if email != blank -%}
+            <a href="mailto:{{ email }}">{% render 'fsg-icon', icon: 'mail', size: 18 %} {{ email }}</a>
+          {%- endif -%}
+          {%- if shop.customer_accounts_enabled -%}
+            <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}">
+              {% render 'fsg-icon', icon: 'user', size: 18 %}
+              {%- if customer %} {{ 'customer.account.title' | t }}{% else %} {{ 'customer.log_in' | t }}{% endif -%}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- if settings.cart_type == 'notification' -%}
+  {%- render 'cart-notification', color_scheme: 'scheme-1', desktop_menu_type: 'mega' -%}
+{%- endif -%}
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "name": {{ shop.name | json }},
+    {% if section.settings.logo %}
+      "logo": {{ section.settings.logo | image_url: width: 500 | prepend: "https:" | json }},
+    {% endif %}
+    "url": {{ request.origin | append: page.url | json }}
+  }
+</script>
+
+{% schema %}
+{
+  "name": "FSG header",
+  "class": "fsg-sticky",
+  "tag": "header",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image",
+      "info": "Optional. Leave empty to use the theme logo file."
+    },
+    {
+      "type": "checkbox",
+      "id": "use_theme_logo",
+      "label": "Use the theme logo file",
+      "info": "assets/fsg-logo-dark.png. Untick to show the text logo instead.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 80,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "default": 220
+    },
+    {
+      "type": "text",
+      "id": "logo_mark",
+      "label": "Text logo mark",
+      "default": "TFSG"
+    },
+    {
+      "type": "text",
+      "id": "logo_name",
+      "label": "Text logo name",
+      "info": "Defaults to the store name."
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Facility Flooring · 4EarthSolutions"
+    },
+    {
+      "type": "header",
+      "content": "Utility bar"
+    },
+    {
+      "type": "link_list",
+      "id": "util_menu",
+      "label": "Utility menu",
+      "info": "Small links on the right of the top bar."
+    },
+    {
+      "type": "header",
+      "content": "Search"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search placeholder",
+      "default": "Search mats, trims, cleaners…"
+    },
+    {
+      "type": "header",
+      "content": "Contact"
+    },
+    {
+      "type": "text",
+      "id": "phone_label",
+      "label": "Phone label",
+      "default": "Call our specialists"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "(085) 1234 899"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "info@facilityflooring.ie"
+    },
+    {
+      "type": "header",
+      "content": "Category bar and mega menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu",
+      "info": "Level 1 = bar items, level 2 = column headings, level 3 = links."
+    },
+    {
+      "type": "text",
+      "id": "accent_item",
+      "label": "Highlight menu item",
+      "info": "Exact title of a top-level item to show in the accent colour, e.g. Logo Mats."
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View all prefix",
+      "default": "Shop all"
+    },
+    {
+      "type": "text",
+      "id": "help_heading",
+      "label": "Help line in mega menu",
+      "default": "Need help choosing?"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Top bar message",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "truck",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "truck", "label": "Delivery" },
+            { "value": "shield", "label": "Warranty" },
+            { "value": "check", "label": "Tick" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "phone", "label": "Phone" },
+            { "value": "leaf", "label": "Leaf" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Fast delivery across Ireland"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

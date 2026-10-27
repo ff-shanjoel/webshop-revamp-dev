@@ -1,22 +1,18 @@
 {
   "sections": {
     "main": {
-      "type": "main-search",
+      "type": "fsg-main-search",
       "settings": {
-        "columns_desktop": 4,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": false,
-        "show_vendor": false,
-        "show_rating": false,
-        "enable_filtering": true,
-        "filter_type": "horizontal",
-        "enable_sorting": true,
-        "article_show_date": true,
-        "article_show_author": false,
-        "columns_mobile": "2",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "heading": "Search our products",
+        "placeholder": "Search mats, trims, cleaners…",
+        "per_page": 24,
+        "show_delivery": true,
+        "ship_text": "Delivery in 2–3 working days",
+        "mto_tag": "Logo Mats",
+        "phone": "(085) 1234 899",
+        "browse_heading": "Browse by category",
+        "menu": "main-menu",
+        "browse_limit": 8
       }
     }
   },

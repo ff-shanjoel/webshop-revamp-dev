@@ -1,0 +1,233 @@
+{%- liquid
+  assign s = section.settings
+  assign ship_text = ''
+  if s.show_delivery
+    assign ship_text = s.ship_text
+  endif
+
+  # Category chips: find the menu item this collection sits under and show its siblings,
+  # so shoppers can hop between ranges without going back to the menu.
+  assign chip_parent = null
+  if s.menu != blank
+    for link in s.menu.links
+      if link.links.size == 0
+        continue
+      endif
+      if link.url == collection.url
+        assign chip_parent = link
+        break
+      endif
+      for child in link.links
+        if child.url == collection.url
+          assign chip_parent = link
+          break
+        endif
+      endfor
+      if chip_parent
+        break
+      endif
+    endfor
+  endif
+-%}
+
+{{ 'fsg-pages.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+<section class="fsg fsg-plp" data-fsg-plp>
+  <div class="fsg-wrap">
+    <nav class="fsg-crumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      {%- if chip_parent and chip_parent.url != collection.url -%}
+        {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
+        <a href="{{ chip_parent.url }}">{{ chip_parent.title | escape }}</a>
+      {%- endif -%}
+      {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
+      <span aria-current="page">{{ collection.title | escape }}</span>
+    </nav>
+
+    <header class="fsg-plp__head">
+      <h1 class="fsg-plp__title">{{ collection.title | escape }}</h1>
+      <p class="fsg-plp__count">
+        {{ collection.products_count }}
+        {% if collection.products_count == 1 %}product{% else %}products{% endif %}
+      </p>
+      {%- if collection.description != blank and s.show_description -%}
+        <div class="fsg-rte fsg-plp__desc is-clamped" data-fsg-desc>{{ collection.description }}</div>
+        <button type="button" class="fsg-plp__more" data-fsg-desc-toggle hidden>Read more</button>
+      {%- endif -%}
+    </header>
+
+    {%- if chip_parent -%}
+      <nav class="fsg-chips" aria-label="{{ chip_parent.title | escape }}">
+        <a href="{{ chip_parent.url }}" class="fsg-chip{% if chip_parent.url == collection.url %} is-active{% endif %}" style="padding-left:14px">
+          All
+        </a>
+        {%- for child in chip_parent.links -%}
+          {%- liquid
+            assign chip_img = null
+            if child.type == 'collection_link'
+              assign chip_img = child.object.products.first.featured_image | default: child.object.image
+            endif
+          -%}
+          <a href="{{ child.url }}" class="fsg-chip{% if child.url == collection.url %} is-active{% endif %}">
+            {%- if chip_img -%}
+              {{ chip_img | image_url: width: 80 | image_tag: loading: 'lazy', alt: '' }}
+            {%- endif -%}
+            {{ child.title | escape }}
+          </a>
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+
+    {%- render 'fsg-facets', results: collection, action: collection.url -%}
+
+    {%- liquid
+      assign has_active = false
+      for filter in collection.filters
+        if filter.active_values.size > 0
+          assign has_active = true
+        endif
+        if filter.type == 'price_range'
+          if filter.min_value.value != null or filter.max_value.value != null
+            assign has_active = true
+          endif
+        endif
+      endfor
+    -%}
+
+    {%- paginate collection.products by s.per_page -%}
+      {%- if collection.products.size > 0 -%}
+        <ul class="fsg-plp__grid" role="list">
+          {%- for product in collection.products -%}
+            <li>
+              {%- assign eager = false -%}
+              {%- if forloop.index <= 4 -%}{%- assign eager = true -%}{%- endif -%}
+              {% render 'fsg-product-card',
+                card_product: product,
+                section_id: section.id,
+                badge: s.badge,
+                show_vendor: s.show_vendor,
+                ship_text: ship_text,
+                mto_tag: s.mto_tag,
+                eager: eager
+              %}
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="fsg-pages" aria-label="Pagination">
+            {%- if paginate.previous -%}
+              <a href="{{ paginate.previous.url }}" aria-label="Previous page">‹</a>
+            {%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a href="{{ part.url }}">{{ part.title }}</a>
+              {%- elsif part.title == paginate.current_page -%}
+                <span aria-current="page">{{ part.title }}</span>
+              {%- else -%}
+                <span>{{ part.title }}</span>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}
+              <a href="{{ paginate.next.url }}" aria-label="Next page">›</a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- else -%}
+        <div class="fsg-plp__empty">
+          <strong>No products found</strong>
+          {%- if has_active -%}
+            <p>Try removing a filter.</p>
+            <a href="{{ collection.url }}" class="fsg-btn fsg-btn--primary">Clear filters</a>
+          {%- else -%}
+            <p>This range is being restocked. Have a look at our other categories.</p>
+            <a href="{{ routes.collections_url }}" class="fsg-btn fsg-btn--primary">Browse all categories</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+<script>
+  (() => {
+    const root = document.currentScript.previousElementSibling;
+    root.querySelector('.fsg-chip.is-active')?.scrollIntoView({ block: 'nearest', inline: 'center' });
+    // Show "Read more" only when the description is actually cut off.
+    const desc = root.querySelector('[data-fsg-desc]');
+    const more = root.querySelector('[data-fsg-desc-toggle]');
+    if (desc && more && desc.scrollHeight > desc.clientHeight + 2) {
+      more.hidden = false;
+      more.addEventListener('click', () => {
+        const clamped = desc.classList.toggle('is-clamped');
+        more.textContent = clamped ? 'Read more' : 'Read less';
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FSG collection",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Products per page",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Category chips menu",
+      "default": "main-menu",
+      "info": "Shows the other ranges from the same menu group as quick links."
+    },
+    {
+      "type": "header",
+      "content": "Product cards"
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Badge on available products",
+      "default": "In stock"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_delivery",
+      "label": "Show delivery line",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "ship_text",
+      "label": "Delivery line",
+      "default": "Delivery in 2–3 working days"
+    },
+    {
+      "type": "text",
+      "id": "mto_tag",
+      "label": "Made-to-order product tag",
+      "default": "Logo Mats"
+    }
+  ]
+}
+{% endschema %}

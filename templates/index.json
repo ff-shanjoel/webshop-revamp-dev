@@ -1,75 +1,217 @@
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
+    "hero": {
+      "type": "fsg-hero",
       "blocks": {
-        "heading": {
-          "type": "heading",
+        "b1": {
+          "type": "benefit",
           "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
+            "icon": "truck",
+            "title": "Fast delivery",
+            "text": "2–3 working days, €15 ROI"
           }
         },
-        "button": {
-          "type": "buttons",
+        "b2": {
+          "type": "benefit",
           "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
+            "icon": "shield",
+            "title": "Up to 5-year warranty",
+            "text": "On entrance systems"
+          }
+        },
+        "b3": {
+          "type": "benefit",
+          "settings": {
+            "icon": "ruler",
+            "title": "Made to measure",
+            "text": "Cut & shaped on site"
+          }
+        },
+        "b4": {
+          "type": "benefit",
+          "settings": {
+            "icon": "chat",
+            "title": "Expert advice",
+            "text": "Same-day quotes"
           }
         }
       },
       "block_order": [
-        "heading",
-        "button"
+        "b1",
+        "b2",
+        "b3",
+        "b4"
       ],
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "image_behavior": "none",
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "fallback_product": "smart-aluclick-12mm-mat",
+        "fallback_photo": 1,
+        "image_opacity": 55,
+        "min_height": 440,
+        "eyebrow": "Ireland's floor specialists",
+        "heading": "Entrance matting, trims and protection for every building.",
+        "text": "<p>Entrance matting, logo mats, trims and eco floor care — delivered across Ireland in 2–3 working days.</p>",
+        "button_label": "Shop entrance matting",
+        "button_link": "shopify://collections/secondary-textile-mats-for-recess",
+        "button_2_label": "Get a quote",
+        "padding_top": 24,
+        "padding_bottom": 48,
+        "image_position": "auto"
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
+    "tiles": {
+      "type": "fsg-collection-tiles",
+      "blocks": {
+        "c1": {
+          "type": "collection",
+          "settings": {
+            "collection": "secondary-textile-mats-for-recess",
+            "title": "Recessed entrance mats"
+          }
+        },
+        "c2": {
+          "type": "collection",
+          "settings": {
+            "collection": "aluminium-mats-1",
+            "title": "Aluminium mats"
+          }
+        },
+        "c3": {
+          "type": "collection",
+          "settings": {
+            "collection": "logo-mats",
+            "title": "Logo mats"
+          }
+        },
+        "c4": {
+          "type": "collection",
+          "settings": {
+            "collection": "modular-mats",
+            "title": "Modular mats"
+          }
+        },
+        "c5": {
+          "type": "collection",
+          "settings": {
+            "collection": "trims",
+            "title": "Trims & profiles"
+          }
+        },
+        "c6": {
+          "type": "collection",
+          "settings": {
+            "collection": "corner-guards",
+            "title": "Corner guards"
+          }
+        },
+        "c7": {
+          "type": "collection",
+          "settings": {
+            "collection": "walls-guards",
+            "title": "Wall protection"
+          }
+        },
+        "c8": {
+          "type": "collection",
+          "settings": {
+            "collection": "anti-slip-treatments",
+            "title": "Anti-slip treatments"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8"
+      ],
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "columns_mobile": "2",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "heading": "Shop by category",
+        "link_label": "All categories",
+        "link": "shopify://collections",
+        "columns": 4,
+        "show_count": true,
+        "background": "white",
+        "padding_top": 32,
+        "padding_bottom": 56
+      }
+    },
+    "featured": {
+      "type": "fsg-featured-products",
+      "settings": {
+        "eyebrow": "Ready to ship",
+        "heading": "Best sellers",
+        "collection": "secondary-textile-mats-for-recess",
+        "limit": 8,
+        "columns": 4,
+        "badge": "In stock",
+        "show_vendor": true,
+        "link_label": "View all",
+        "background": "mist",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "help": {
+      "type": "fsg-help-band",
+      "settings": {
+        "eyebrow": "Free advice",
+        "heading": "Talk to someone who knows floors.",
+        "text": "<p>Not sure which mat, trim or treatment you need? Send us a photo or your measurements and we'll recommend the right product, usually the same day.</p>",
+        "phone": "(085) 1234 899",
+        "email": "info@facilityflooring.ie",
+        "fallback_product": "outdoor-aluminium-mat-pack-clean-brush-12mm",
+        "fallback_photo": 7,
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    },
+    "promos": {
+      "type": "fsg-promo-cards",
+      "blocks": {
+        "logo": {
+          "type": "card",
+          "settings": {
+            "fallback_product": "copy-of-indoor-outdoor-image-logo-mats",
+            "fallback_photo": 4,
+            "eyebrow": "Custom logo mats",
+            "heading": "Your logo at the front door",
+            "text": "Any size, full colour, with a digital proof before production.",
+            "button_label": "Shop logo mats",
+            "link": "shopify://collections/logo-mats"
+          }
+        },
+        "earth": {
+          "type": "card",
+          "settings": {
+            "fallback_product": "4earth-carpet-upholstery-cleaner-1-litre",
+            "fallback_photo": 1,
+            "eyebrow": "4EarthSolutions",
+            "heading": "Eco cleaners, sealers & anti-slip",
+            "text": "Floor care for stone, tile and timber.",
+            "button_label": "Shop floor care",
+            "link": "shopify://collections/cleaning-supplies"
+          }
+        }
+      },
+      "block_order": [
+        "logo",
+        "earth"
+      ],
+      "settings": {
+        "padding_top": 56,
+        "padding_bottom": 8
       }
     }
   },
   "order": [
-    "image_banner",
-    "featured_collection"
+    "hero",
+    "tiles",
+    "featured",
+    "promos",
+    "help"
   ]
 }

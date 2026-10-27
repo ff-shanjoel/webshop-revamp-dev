@@ -18,23 +18,65 @@
       "blocks": {
         "subtotal": {
           "type": "subtotal",
-          "settings": {
-          }
+          "settings": {}
         },
         "buttons": {
           "type": "buttons",
-          "settings": {
-          }
+          "settings": {}
         }
       },
       "block_order": [
         "subtotal",
         "buttons"
       ]
+    },
+    "cart-steps": {
+      "type": "fsg-cart-steps",
+      "settings": {
+        "step_1": "Your basket",
+        "step_2": "Delivery & payment",
+        "step_3": "Order confirmed"
+      }
+    },
+    "cart-help": {
+      "type": "fsg-cart-assist",
+      "blocks": {
+        "l1": {
+          "type": "line",
+          "settings": {
+            "text": "Secure checkout — card, Apple Pay & Google Pay"
+          }
+        },
+        "l2": {
+          "type": "line",
+          "settings": {
+            "text": "All prices include 23% VAT"
+          }
+        },
+        "l3": {
+          "type": "line",
+          "settings": {
+            "text": "Up to 5-year warranty on entrance systems"
+          }
+        }
+      },
+      "block_order": [
+        "l1",
+        "l2",
+        "l3"
+      ],
+      "settings": {
+        "delivery_heading": "Delivered in 2–3 working days",
+        "delivery_text": "€15 anywhere in the Republic of Ireland. Made-to-order items take longer.",
+        "help_text": "Questions? Call",
+        "phone": "(085) 1234 899"
+      }
     }
   },
   "order": [
+    "cart-steps",
     "cart-items",
-    "cart-footer"
+    "cart-footer",
+    "cart-help"
   ]
 }

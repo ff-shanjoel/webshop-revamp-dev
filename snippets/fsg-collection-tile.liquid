@@ -1,0 +1,40 @@
+{% comment %}
+  Collection tile with photo (first product photo, then the collection image) and product count.
+  Uses the .fsg-tile styles from fsg-sections.css.
+
+  Accepts:
+  - collection: {Object} collection
+  - title: {String} title override (optional)
+
+  Usage:
+  {% render 'fsg-collection-tile', collection: c %}
+{% endcomment %}
+{%- liquid
+  assign tile_title = title | default: collection.title
+  assign img = collection.products.first.featured_image | default: collection.image
+-%}
+<a href="{{ collection.url }}" class="fsg-tile">
+  <span class="fsg-tile__media">
+    {%- if img != blank -%}
+      {{
+        img
+        | image_url: width: 600
+        | image_tag:
+          widths: '300, 450, 600',
+          sizes: '(min-width: 1200px) 300px, (min-width: 750px) 25vw, 50vw',
+          loading: 'lazy',
+          alt: tile_title
+      }}
+    {%- else -%}
+      {{ 'collection-1' | placeholder_svg_tag: 'fsg-placeholder' }}
+    {%- endif -%}
+  </span>
+  <span class="fsg-tile__body">
+    <span class="fsg-tile__title">{{ tile_title | escape }}</span>
+    <span class="fsg-tile__count">
+      {{- collection.products_count }}
+      {% if collection.products_count == 1 %}product{% else %}products{% endif -%}
+    </span>
+  </span>
+  <span class="fsg-tile__arrow">{% render 'fsg-icon', icon: 'arrow-right', size: 16 %}</span>
+</a>

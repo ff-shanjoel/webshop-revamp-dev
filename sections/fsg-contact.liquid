@@ -1,0 +1,202 @@
+{%- liquid
+  assign s = section.settings
+  assign phone_href = s.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+  assign topics = s.topics | newline_to_br | split: '<br />'
+-%}
+
+{{ 'fsg-pages.css' | asset_url | stylesheet_tag }}
+
+<section class="fsg fsg-contact">
+  <div class="fsg-wrap">
+    <nav class="fsg-crumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
+      <span aria-current="page">{{ s.heading }}</span>
+    </nav>
+
+    <div class="fsg-contact__grid">
+      <div class="fsg-contact__intro">
+        <h1 class="fsg-doc__title">{{ s.heading }}</h1>
+        {%- if s.text != blank -%}<div class="fsg-rte fsg-contact__lead">{{ s.text }}</div>{%- endif -%}
+
+        <ul class="fsg-contact__ways" role="list">
+          {%- if s.phone != blank -%}
+            <li>
+              <a href="tel:{{ phone_href }}">
+                <span class="fsg-contact__icon">{% render 'fsg-icon', icon: 'phone', size: 20 %}</span>
+                <span><small>Call us</small><strong>{{ s.phone }}</strong></span>
+              </a>
+            </li>
+          {%- endif -%}
+          {%- if s.email != blank -%}
+            <li>
+              <a href="mailto:{{ s.email }}">
+                <span class="fsg-contact__icon">{% render 'fsg-icon', icon: 'mail', size: 20 %}</span>
+                <span><small>Email us</small><strong>{{ s.email }}</strong></span>
+              </a>
+            </li>
+          {%- endif -%}
+          {%- if s.hours != blank -%}
+            <li>
+              <div>
+                <span class="fsg-contact__icon">{% render 'fsg-icon', icon: 'clock', size: 20 %}</span>
+                <span><small>Opening hours</small><strong>{{ s.hours }}</strong></span>
+              </div>
+            </li>
+          {%- endif -%}
+          {%- if s.address != blank -%}
+            <li>
+              <div>
+                <span class="fsg-contact__icon">{% render 'fsg-icon', icon: 'pin', size: 20 %}</span>
+                <span><small>Address</small><strong>{{ s.address | newline_to_br }}</strong></span>
+              </div>
+            </li>
+          {%- endif -%}
+        </ul>
+      </div>
+
+      <div class="fsg-contact__card">
+        <h2 class="fsg-h3">{{ s.form_heading }}</h2>
+        {%- if s.form_text != blank -%}<p class="fsg-contact__note">{{ s.form_text }}</p>{%- endif -%}
+
+        {%- form 'contact', id: 'FsgContactForm', class: 'fsg-form' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="fsg-form__ok" role="status">
+              {% render 'fsg-icon', icon: 'check', size: 18 %}
+              <span>{{ s.success_text }}</span>
+            </div>
+          {%- elsif form.errors -%}
+            <div class="fsg-form__err" role="alert">{{ form.errors | default_errors }}</div>
+          {%- endif -%}
+
+          <div class="fsg-form__row">
+            <label class="fsg-field">
+              <span>Your name *</span>
+              <input type="text" name="contact[name]" value="{{ form.name }}" autocomplete="name" required>
+            </label>
+            <label class="fsg-field">
+              <span>Email *</span>
+              <input type="email" name="contact[email]" value="{{ form.email }}" autocomplete="email" required>
+            </label>
+          </div>
+          <div class="fsg-form__row">
+            <label class="fsg-field">
+              <span>Phone</span>
+              <input type="tel" name="contact[phone]" value="{{ form.phone }}" autocomplete="tel">
+            </label>
+            <label class="fsg-field">
+              <span>Company</span>
+              <input type="text" name="contact[company]" value="{{ form.company }}" autocomplete="organization">
+            </label>
+          </div>
+          {%- if topics.size > 0 -%}
+            <label class="fsg-field">
+              <span>What can we help with?</span>
+              <select name="contact[topic]">
+                {%- for topic in topics -%}
+                  {%- assign t = topic | strip -%}
+                  {%- if t != blank -%}<option value="{{ t | escape }}">{{ t }}</option>{%- endif -%}
+                {%- endfor -%}
+              </select>
+            </label>
+          {%- endif -%}
+          <label class="fsg-field">
+            <span>Message *</span>
+            <textarea name="contact[body]" rows="5" required placeholder="{{ s.message_placeholder | escape }}">{{ form.body }}</textarea>
+          </label>
+          <button type="submit" class="fsg-btn fsg-btn--primary fsg-btn--block">
+            {{- s.button_label }}
+            {% render 'fsg-icon', icon: 'arrow-right', size: 17 -%}
+          </button>
+          <p class="fsg-contact__privacy">We only use your details to reply to you.</p>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FSG contact",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Contact us"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Intro",
+      "default": "<p>Questions about an order, need advice on the right mat or trim, or want a quote for a project? Get in touch — we usually reply the same working day.</p>"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "(085) 1234 899"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "info@facilityflooring.ie"
+    },
+    {
+      "type": "text",
+      "id": "hours",
+      "label": "Opening hours",
+      "default": "Mon–Fri, 9am – 5pm"
+    },
+    {
+      "type": "textarea",
+      "id": "address",
+      "label": "Address",
+      "info": "Leave empty to hide."
+    },
+    {
+      "type": "header",
+      "content": "Form"
+    },
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Form heading",
+      "default": "Send us a message"
+    },
+    {
+      "type": "text",
+      "id": "form_text",
+      "label": "Form text",
+      "default": "Fill in the form and a specialist will get back to you."
+    },
+    {
+      "type": "textarea",
+      "id": "topics",
+      "label": "Topics",
+      "info": "One per line. Leave empty to hide the topic menu.",
+      "default": "Product advice\nQuote for a project\nCustom logo mat\nQuestion about my order\nSomething else"
+    },
+    {
+      "type": "text",
+      "id": "message_placeholder",
+      "label": "Message placeholder",
+      "default": "Tell us what you need — sizes, quantities, where it's going…"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Send message"
+    },
+    {
+      "type": "text",
+      "id": "success_text",
+      "label": "Thank-you message",
+      "default": "Thanks — we've got your message and will reply soon."
+    }
+  ]
+}
+{% endschema %}

@@ -1,58 +1,19 @@
-.accordion summary {
-  display: flex;
-  position: relative;
-  line-height: 1;
-  padding: 1.5rem 0;
-}
+Copyright (c) 2021-present Shopify Inc.
 
-.accordion .summary__title {
-  display: flex;
-  flex: 1;
-}
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-.accordion .summary__title + .icon-caret {
-  height: calc(var(--font-heading-scale) * 0.6rem);
-}
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-.accordion + .accordion {
-  margin-top: 0;
-  border-top: none;
-}
-
-.accordion {
-  margin-top: 2.5rem;
-  margin-bottom: 0;
-  border-top: 0.1rem solid rgba(var(--color-foreground), 0.08);
-  border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
-}
-
-.accordion__title {
-  display: inline-block;
-  max-width: calc(100% - 6rem);
-  min-height: 1.6rem;
-  margin: 0;
-  word-break: break-word;
-}
-
-.accordion .svg-wrapper {
-  align-self: center;
-  fill: rgb(var(--color-foreground));
-  height: calc(var(--font-heading-scale) * 2rem);
-  margin-right: calc(var(--font-heading-scale) * 1rem);
-  width: calc(var(--font-heading-scale) * 2rem);
-}
-
-.accordion details[open] > summary .icon-caret {
-  transform: rotate(180deg);
-}
-
-.accordion__content {
-  margin-bottom: 1.5rem;
-  word-break: break-word;
-  overflow-x: auto;
-  padding: 0 0.6rem;
-}
-
-.accordion__content img {
-  max-width: 100%;
-}
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

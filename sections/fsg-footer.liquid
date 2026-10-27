@@ -1,0 +1,340 @@
+{%- liquid
+  assign phone = section.settings.phone
+  assign phone_href = phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+  assign email = section.settings.email
+-%}
+
+<div class="fsg fsg-footer">
+  {%- if section.settings.help_heading != blank -%}
+    <div class="fsg-footer__help">
+      <div class="fsg-wrap">
+        <div class="fsg-footer__help-inner">
+          <div class="fsg-footer__help-text">
+            <span class="fsg-footer__help-icon">{% render 'fsg-icon', icon: 'chat', size: 24 %}</span>
+            <div>
+              <h2>{{ section.settings.help_heading }}</h2>
+              {%- if section.settings.help_text != blank -%}
+                <p>{{ section.settings.help_text }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+          <div class="fsg-footer__help-actions">
+            {%- if phone != blank -%}
+              <a href="tel:{{ phone_href }}" class="fsg-btn fsg-btn--light">
+                {% render 'fsg-icon', icon: 'phone', size: 18 %}
+                {{ phone }}
+              </a>
+            {%- endif -%}
+            {%- if email != blank -%}
+              <a href="mailto:{{ email }}" class="fsg-btn fsg-btn--ghost">
+                {% render 'fsg-icon', icon: 'mail', size: 18 %}
+                {{ section.settings.email_label | default: email }}
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="fsg-wrap fsg-footer__main">
+    <div class="fsg-footer__brand">
+      <a href="{{ routes.root_url }}" class="fsg-logo">
+        {%- if section.settings.logo != blank -%}
+          {%- liquid
+            assign logo_width = section.settings.logo_width
+            assign logo_2x = logo_width | times: 2
+            assign logo_style = 'width:' | append: logo_width | append: 'px'
+          -%}
+          {{
+            section.settings.logo
+            | image_url: width: logo_2x
+            | image_tag: style: logo_style, alt: shop.name, loading: 'lazy'
+          }}
+        {%- elsif section.settings.use_theme_logo -%}
+          {%- assign logo_style = 'width:' | append: section.settings.logo_width | append: 'px' -%}
+          <img
+            src="{{ 'fsg-logo-light.png' | asset_url }}"
+            alt="{{ shop.name | escape }}"
+            width="800"
+            height="134"
+            style="{{ logo_style }}"
+            loading="lazy"
+          >
+        {%- else -%}
+          <span class="fsg-logo__mark" aria-hidden="true">{{ section.settings.logo_mark }}</span>
+          <span class="fsg-logo__text">
+            <span class="fsg-logo__name">{{ shop.name }}</span>
+            {%- if section.settings.tagline != blank -%}
+              <span class="fsg-logo__tag">{{ section.settings.tagline }}</span>
+            {%- endif -%}
+          </span>
+        {%- endif -%}
+      </a>
+      {%- if section.settings.about != blank -%}
+        <div class="fsg-rte">{{ section.settings.about }}</div>
+      {%- endif -%}
+      <div class="fsg-footer__contact">
+        {%- if phone != blank -%}
+          <a href="tel:{{ phone_href }}">{% render 'fsg-icon', icon: 'phone', size: 17 %} {{ phone }}</a>
+        {%- endif -%}
+        {%- if email != blank -%}
+          <a href="mailto:{{ email }}">{% render 'fsg-icon', icon: 'mail', size: 17 %} {{ email }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'menu' -%}
+          {%- if block.settings.menu != blank -%}
+            <nav class="fsg-footer__col" aria-label="{{ block.settings.heading | default: block.settings.menu.title | escape }}" {{ block.shopify_attributes }}>
+              <h3>{{ block.settings.heading | default: block.settings.menu.title }}</h3>
+              <ul role="list">
+                {%- for link in block.settings.menu.links -%}
+                  <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            </nav>
+          {%- endif -%}
+
+        {%- when 'text' -%}
+          <div class="fsg-footer__col" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <h3>{{ block.settings.heading }}</h3>
+            {%- endif -%}
+            <div class="fsg-rte">{{ block.settings.text }}</div>
+          </div>
+
+        {%- when 'newsletter' -%}
+          <div class="fsg-footer__col fsg-footer__news" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <h3>{{ block.settings.heading }}</h3>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <div class="fsg-rte">{{ block.settings.text }}</div>
+            {%- endif -%}
+            {%- assign newsletter_id = 'FsgNewsletter-' | append: block.id -%}
+            {%- form 'customer', id: newsletter_id -%}
+              <input type="hidden" name="contact[tags]" value="newsletter">
+              <div class="fsg-footer__news-row">
+                <label class="visually-hidden" for="FsgNewsletterEmail-{{ block.id }}">
+                  {{- 'newsletter.label' | t -}}
+                </label>
+                <input
+                  id="FsgNewsletterEmail-{{ block.id }}"
+                  type="email"
+                  name="contact[email]"
+                  value="{{ form.email }}"
+                  autocomplete="email"
+                  placeholder="{{ 'newsletter.label' | t }}"
+                  required
+                >
+                <button type="submit" class="fsg-btn fsg-btn--light">{{ block.settings.button_label }}</button>
+              </div>
+              {%- if form.posted_successfully? -%}
+                <p class="fsg-footer__msg fsg-footer__msg--ok" role="status">{{ 'newsletter.success' | t }}</p>
+              {%- elsif form.errors -%}
+                <p class="fsg-footer__msg fsg-footer__msg--err" role="alert">
+                  {{ form.errors.translated_fields.email | capitalize }}
+                  {{ form.errors.messages.email }}
+                </p>
+              {%- endif -%}
+            {%- endform -%}
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="fsg-footer__bottom">
+    <div class="fsg-wrap fsg-footer__bottom-inner">
+      <div class="fsg-footer__legal">
+        <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
+        {%- if section.settings.show_policy -%}
+          {%- for policy in shop.policies -%}
+            {%- if policy != blank -%}
+              <a href="{{ policy.url }}">{{ policy.title }}</a>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+      {%- if section.settings.payment_enable -%}
+        <ul class="fsg-footer__pay" role="list" aria-label="{{ 'sections.footer.payment' | t }}">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "FSG footer",
+  "tag": "footer",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Help bar"
+    },
+    {
+      "type": "text",
+      "id": "help_heading",
+      "label": "Heading",
+      "default": "Need help with your project?"
+    },
+    {
+      "type": "text",
+      "id": "help_text",
+      "label": "Text",
+      "default": "Talk to a flooring specialist — free advice, measuring and same-day quotes."
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "(085) 1234 899"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "info@facilityflooring.ie"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email button label",
+      "default": "Email us"
+    },
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Optional. Leave empty to use the theme logo file."
+    },
+    {
+      "type": "checkbox",
+      "id": "use_theme_logo",
+      "label": "Use the theme logo file",
+      "info": "assets/fsg-logo-light.png (white version for the dark footer).",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 80,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "default": 200
+    },
+    {
+      "type": "text",
+      "id": "logo_mark",
+      "label": "Text logo mark",
+      "default": "TFSG"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Facility Flooring · 4EarthSolutions"
+    },
+    {
+      "type": "richtext",
+      "id": "about",
+      "label": "About text",
+      "default": "<p>Entrance matting, trims, wall protection and eco floor care for commercial and residential buildings across Ireland.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_policy",
+      "label": "Show policy links",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "payment_enable",
+      "label": "Show payment icons",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Visit us"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Opening hours, address or any short note.</p>"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Trade news & offers"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>New products, guides and occasional offers. No spam.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Subscribe"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
