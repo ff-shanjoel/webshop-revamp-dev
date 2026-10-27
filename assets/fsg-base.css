@@ -416,6 +416,31 @@
   background: var(--fsg-slate-dark);
 }
 /* Search results dropdown (restyles Dawn's predictive search) */
+/* Dawn's own predictive-search CSS loads lazily; until it arrives the panel and its
+   unsized spinner SVG would show full-width on a hard refresh. Hide/size them here. */
+.fsg-search .predictive-search {
+  display: none;
+  position: absolute;
+}
+.fsg-search predictive-search[open] .predictive-search,
+.fsg-search predictive-search[loading] .predictive-search {
+  display: block;
+}
+.fsg-search .predictive-search__loading-state {
+  display: none;
+  justify-content: center;
+  padding: 20px;
+}
+.fsg-search predictive-search[loading] .predictive-search__loading-state {
+  display: flex;
+}
+.fsg-search .predictive-search__loading-state .spinner {
+  width: 24px;
+  height: 24px;
+}
+.fsg-search .predictive-search__loading-state .path {
+  stroke: var(--fsg-slate);
+}
 .fsg-search .predictive-search {
   top: calc(100% + 8px);
   left: 0;
