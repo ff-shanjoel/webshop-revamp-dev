@@ -1,6 +1,6 @@
 # The Flooring Supply Centre — Shopify theme
 
-Custom Shopify theme for **The Flooring Supply Centre** (Facility Flooring · 4EarthSolutions),
+Custom Shopify theme for **The Flooring Supply Centre**,
 store `theflooringspecialistgroup.myshopify.com`, public domain `theflooringsupplycentre.ie`.
 
 The theme is built **on top of Shopify's Dawn 16.0.0**. Dawn provides the cart, checkout hand-off,
