@@ -1601,3 +1601,9 @@ main .shopify-policy__container.fsg-policy {
     white-space: nowrap;
   }
 }
+
+/* Shop all link in the category bar */
+.fsg-cats__link--all {
+  font-weight: 800;
+  color: var(--fsg-slate);
+}

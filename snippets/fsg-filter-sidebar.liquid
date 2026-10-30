@@ -1,0 +1,222 @@
+{% comment %}
+  Sidebar for collection pages: category list + filters. On phones it is a slide-in panel
+  opened by a [data-fsg-side-open] button. Filter groups come from Shopify storefront filters
+  (add more in the Search & Discovery app and they appear here automatically).
+
+  Accepts:
+  - results: {Object} collection
+  - menu: {Object} link list used for the category list (optional)
+  - all_url: {String} URL of the "all products" link
+  - all_label: {String} label of the "all products" link
+
+  Usage:
+  {% render 'fsg-filter-sidebar', results: collection, menu: s.menu, all_url: s.all_link, all_label: 'Shop all' %}
+{% endcomment %}
+{%- liquid
+  assign has_active = false
+  for filter in results.filters
+    if filter.active_values.size > 0
+      assign has_active = true
+    endif
+    if filter.type == 'price_range'
+      if filter.min_value.value != null or filter.max_value.value != null
+        assign has_active = true
+      endif
+    endif
+  endfor
+-%}
+<div class="fsg-side__overlay" data-fsg-side-close></div>
+<aside class="fsg-side" data-fsg-side aria-label="Categories and filters">
+  <div class="fsg-side__top">
+    <strong>Filters</strong>
+    <button type="button" class="fsg-drawer__close" data-fsg-side-close aria-label="Close filters">
+      {% render 'fsg-icon', icon: 'close', size: 20 %}
+    </button>
+  </div>
+
+  <div class="fsg-side__body">
+    {%- comment -%} Categories {%- endcomment -%}
+    <nav class="fsg-side__group" aria-label="Categories">
+      <h2 class="fsg-side__title">Categories</h2>
+      <a href="{{ all_url }}" class="fsg-side__link fsg-side__link--all{% if results.url == all_url %} is-active{% endif %}">
+        {{- all_label -}}
+      </a>
+      {%- if menu != blank -%}
+        {%- for link in menu.links -%}
+          {%- if link.links.size == 0 -%}{%- continue -%}{%- endif -%}
+          {%- liquid
+            assign in_group = false
+            if link.url == results.url
+              assign in_group = true
+            endif
+            for child in link.links
+              if child.url == results.url
+                assign in_group = true
+              endif
+            endfor
+          -%}
+          <details class="fsg-side__cat"{% if in_group %} open{% endif %}>
+            <summary>
+              {{- link.title | remove: 'Shop ' | escape -}}
+              {% render 'fsg-icon', icon: 'chevron-down', size: 16 %}
+            </summary>
+            <ul role="list">
+              {%- for child in link.links -%}
+                {%- if child.type == 'collection_link' and child.object.products_count == 0 -%}{%- continue -%}{%- endif -%}
+                <li>
+                  <a
+                    href="{{ child.url }}"
+                    class="fsg-side__link{% if child.url == results.url %} is-active{% endif %}"
+                    {% if child.url == results.url %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    <span>{{ child.title | escape }}</span>
+                    {%- if child.type == 'collection_link' -%}
+                      <small>{{ child.object.products_count }}</small>
+                    {%- endif -%}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </details>
+        {%- endfor -%}
+      {%- endif -%}
+    </nav>
+
+    {%- comment -%} Filters {%- endcomment -%}
+    <form id="FsgFilterForm" action="{{ results.url }}" method="get" data-fsg-filter-form>
+      {%- if has_active -%}
+        <div class="fsg-side__group fsg-side__active">
+          <div class="fsg-side__active-head">
+            <h2 class="fsg-side__title">Active filters</h2>
+            <a href="{{ results.url }}?sort_by={{ results.sort_by | default: results.default_sort_by }}">Clear all</a>
+          </div>
+          <div class="fsg-active">
+            {%- for filter in results.filters -%}
+              {%- for value in filter.active_values -%}
+                <a href="{{ value.url_to_remove }}">
+                  {{ value.label | escape }}
+                  {% render 'fsg-icon', icon: 'close', size: 13 %}
+                </a>
+              {%- endfor -%}
+              {%- if filter.type == 'price_range' -%}
+                {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+                  <a href="{{ filter.url_to_remove }}">
+                    {{ filter.min_value.value | default: 0 | money }} – {{ filter.max_value.value | default: filter.range_max | money }}
+                    {% render 'fsg-icon', icon: 'close', size: 13 %}
+                  </a>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- for filter in results.filters -%}
+        <details class="fsg-side__group fsg-side__filter" open>
+          <summary class="fsg-side__title">
+            {{- filter.label | escape -}}
+            {% render 'fsg-icon', icon: 'chevron-down', size: 16 %}
+          </summary>
+          {%- case filter.type -%}
+            {%- when 'price_range' -%}
+              <div class="fsg-filter__price">
+                <label>
+                  From €
+                  <input
+                    type="number"
+                    name="{{ filter.min_value.param_name }}"
+                    value="{% if filter.min_value.value %}{{ filter.min_value.value | money_without_currency | remove: ',' }}{% endif %}"
+                    placeholder="0"
+                    min="0"
+                    inputmode="decimal"
+                  >
+                </label>
+                <label>
+                  To €
+                  <input
+                    type="number"
+                    name="{{ filter.max_value.param_name }}"
+                    value="{% if filter.max_value.value %}{{ filter.max_value.value | money_without_currency | remove: ',' }}{% endif %}"
+                    placeholder="{{ filter.range_max | money_without_currency | remove: ',' }}"
+                    min="0"
+                    inputmode="decimal"
+                  >
+                </label>
+                <button type="submit" class="fsg-btn fsg-btn--outline fsg-btn--sm fsg-filter__apply">Apply price</button>
+              </div>
+            {%- else -%}
+              <div class="fsg-side__opts">
+                {%- for value in filter.values -%}
+                  <label class="fsg-filter__opt{% if value.count == 0 and value.active == false %} is-disabled{% endif %}">
+                    <input
+                      type="checkbox"
+                      name="{{ value.param_name }}"
+                      value="{{ value.value }}"
+                      {% if value.active %}
+                        checked
+                      {% endif %}
+                      data-fsg-autosubmit
+                    >
+                    <span>{{ value.label | escape }}</span>
+                    <small>{{ value.count }}</small>
+                  </label>
+                {%- endfor -%}
+              </div>
+          {%- endcase -%}
+        </details>
+      {%- endfor -%}
+    </form>
+  </div>
+
+  <div class="fsg-side__foot">
+    <button type="button" class="fsg-btn fsg-btn--primary fsg-btn--block" data-fsg-side-close>
+      Show {{ results.products_count }}
+      {% if results.products_count == 1 %}product{% else %}products{% endif %}
+    </button>
+  </div>
+</aside>
+
+<script>
+  (() => {
+    const side = document.currentScript.previousElementSibling;
+    const overlay = side.previousElementSibling;
+    const page = side.closest('[data-fsg-plp]');
+    const form = side.querySelector('[data-fsg-filter-form]');
+    const root = document.documentElement;
+
+    // Apply a filter or sort straight away; drop empty price fields from the URL.
+    const submit = () => {
+      page?.classList.add('is-loading');
+      form.requestSubmit();
+    };
+    form.addEventListener('change', (e) => {
+      if (e.target.matches('[data-fsg-autosubmit]')) submit();
+    });
+    form.addEventListener('submit', () => {
+      form.querySelectorAll('input[type="number"]').forEach((i) => {
+        if (i.value === '') i.disabled = true;
+      });
+    });
+
+    // Phone panel
+    const toggle = (open) => {
+      side.classList.toggle('is-open', open);
+      overlay.classList.toggle('is-open', open);
+      root.classList.toggle('fsg-lock', open);
+    };
+
+    // The sort menu and Filters button come after this script, so listen on the page.
+    page?.addEventListener('change', (e) => {
+      if (e.target.matches('[data-fsg-sort]')) submit();
+    });
+    page?.addEventListener('click', (e) => {
+      if (e.target.closest('[data-fsg-side-open]')) toggle(true);
+    });
+    [overlay, ...side.querySelectorAll('[data-fsg-side-close]')].forEach((b) => b.addEventListener('click', () => toggle(false)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && side.classList.contains('is-open')) toggle(false);
+    });
+  })();
+</script>

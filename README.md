@@ -282,7 +282,8 @@ snippets/
   fsg-image               Image with "use a product photo" fallback + focal point
   fsg-product-card        Product card with quick add
   fsg-collection-tile, fsg-mega-tile, fsg-article-card   Tiles and cards
-  fsg-facets              Filter + sort bar shared by collection and search pages
+  fsg-filter-sidebar      Collection page sidebar: categories + filters (slide-in panel on phones)
+  fsg-facets              Filter + sort bar on the search results page
   fsg-favicon             Favicon / touch icon tags
 templates/
   *.json                  Page templates using the fsg- sections
