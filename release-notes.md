@@ -1,16 +1,34 @@
 # Release notes
 
-Changes to The Flooring Supply Centre theme, newest first. Each entry is a set of changes merged to
-`dev` (and, once approved, to `master`). Add a new entry at the top whenever you merge to `master`.
+Changes to The Flooring Supply Centre theme, newest first. Work lands on `dev` first; when it is
+merged to `master` (by pull request), move its entry from **Unreleased** to **Released to `master`**
+under the merge date.
 
 Based on [Dawn 16.0.0](https://github.com/Shopify/dawn/releases) by Shopify. Dawn's own release
 history lives on GitHub; it is not repeated here.
+
+> TFSG – MASTER is **not yet the published theme** — the live store still runs Fashionopolism.
+> "Released to `master`" means approved and synced to TFSG – MASTER, ready to publish.
 
 ---
 
 ## Unreleased (on `dev`)
 
-### 27 October 2026
+### 4 November 2026
+- README simplified into six numbered sections with fold-out references; the file reference is now
+  grouped tables.
+
+---
+
+## Released to `master`
+
+### 4 November 2026 — pull request #2
+- **Shop all** page (`/collections/all`) and a **Shop all** link in the header menu and phone menu.
+- **Filter sidebar** on Shop all and every collection page: categories grouped like the menu,
+  availability and price filters, active-filter tags; a slide-in **Filters** panel on phones.
+- README: how to bring in Dawn updates safely; `dawn-upstream` branch set up.
+
+### 27 October 2026 — pull request #1
 - **404 page** redesigned: search box, quick links and popular category tiles.
 - **Favicon** and phone home-screen icon from the FSC mark.
 - **Coming-soon (password) page** redesigned, with its own `fsg-password` layout.
@@ -18,8 +36,6 @@ history lives on GitHub; it is not repeated here.
 - Fixed a full-width loading spinner that flashed in the header search on a hard refresh.
 - Added the project README; restored `LICENSE.md`, `.theme-check.yml`, `.prettierrc.json`,
   `.gitignore` and these release notes, which held misplaced theme code from the original export.
-
-### 22 October 2026
 - **Hero** uses a wide AluClick entrance-mat photo; new *Photo focus* setting.
 - **New FSC logo**: dark version in the header, white version in the footer.
 - **Blog, article, general page and contact page** templates; **policy pages** tidied into
@@ -30,16 +46,7 @@ history lives on GitHub; it is not repeated here.
 - **Cart page and cart popup** redesigned (steps, summary, help box); **All categories** page.
 - **Product page** (option steps, delivery estimate with cut-off countdown, sticky add to basket)
   and **collection page** (filters, sort, category chips, delivery line on cards).
-
-### 21 October 2026
-- **Header** (utility bar, search, call button, cart), **mega menu** as photo tiles,
-  **footer** and **homepage** (hero, categories, best sellers, promo cards, help band).
-- Category bar tinted; search results dropdown restyled with photos and prices.
+- **Header** (utility bar, search, call button, cart), **mega menu** as photo tiles, **footer** and
+  **homepage** (hero, categories, best sellers, promo cards, help band); category bar tinted; search
+  results dropdown restyled with photos and prices.
 - Fixes for Shopify GitHub sync: range settings need 3+ steps; no links to missing pages.
-
----
-
-## Released to `master`
-
-_Nothing yet. When `dev` is merged and TFSG – MASTER is published, move the entries above here
-under the release date._
