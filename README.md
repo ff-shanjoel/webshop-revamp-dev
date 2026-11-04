@@ -93,7 +93,11 @@ the branch by `shopify[bot]`.
 **Rolling back:** fastest is to publish the previous theme (Fashionopolism or a duplicate). In code,
 `git revert <commit>` on `master` and push — Shopify syncs the revert to the live theme.
 
-Record each release in [`release-notes.md`](release-notes.md).
+**Release notes are automatic.** Every merge to `master` creates a GitHub Release (repo →
+**Releases**) listing the commit messages that came in (`.github/workflows/release.yml`). So write
+each commit message as one plain sentence about what changed, e.g. "Add cart quantity loader and fix
+mobile price overlap". Merge commits and `shopify[bot]` sync commits are left out. The history up to
+pull request #4 is in [`release-notes.md`](release-notes.md).
 
 ---
 
@@ -273,7 +277,7 @@ or `master`.
 - A branch called **`dawn-upstream`** holds **only stock Dawn**. Git compares old Dawn, new Dawn and
   our theme (a three-way merge), so Dawn's changes apply everywhere **except** lines we also changed —
   those few are flagged as conflicts for a person to decide.
-- Project files (`README.md`, `LICENSE.md`, `release-notes.md`, `.gitignore`, `.theme-check.yml`,
+- Project files (`README.md`, `LICENSE.md`, `release-notes.md`, `.github/`, `.gitignore`, `.theme-check.yml`,
   `.prettierrc.json`) are never touched, because only Dawn's theme folders are copied.
 
 ### Dawn files we changed — conflicts can only appear here
@@ -341,7 +345,8 @@ open a pull request from it.
 6. **Check and test locally:** `shopify theme check`, then `shopify theme dev --store
    theflooringspecialistgroup.myshopify.com` and work through the table below on desktop and mobile.
 7. **Ship it like any other change:** merge `dawn-update-v17` into `dev`, push, test on TFSG – DEV, then
-   merge to `master`. Note the version in `release-notes.md` and update "Built on Dawn X" at the top.
+   merge to `master`. Mention the version in the commit message (e.g. "Update Dawn to 17.0.0") so it
+   shows in the GitHub Release, and update "Built on Dawn X" at the top.
 
 If it goes badly, just delete the `dawn-update-…` branch — `dev` and `master` are untouched until you merge.
 

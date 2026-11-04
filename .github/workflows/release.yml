@@ -1,0 +1,88 @@
+# Creates a GitHub Release each time changes reach `master` (by pull request or a direct merge).
+# The release notes are the commit messages that came in, so write each commit message as one
+# plain sentence about what changed. Merge commits, shopify[bot] sync commits and
+# "Update release notes…" commits are left out. Nothing is committed back to any branch.
+#
+# Shopify's GitHub sync ignores the .github folder, so this file never reaches the theme.
+
+name: Release notes
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-notes
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build the notes from the new commits
+        id: notes
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          # Commits that arrived on master with this push (all of history on the very first push).
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] \
+             || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            RANGE="$AFTER"
+          else
+            RANGE="$BEFORE..$AFTER"
+          fi
+
+          # One bullet per human commit message (first line only).
+          git log --no-merges --reverse --format='%an%x09%s' "$RANGE" \
+            | awk -F '\t' '$1 !~ /^shopify(\[bot\])?$/ && $2 !~ /^Update release notes/ { print "- " $2 }' \
+            > notes.md
+
+          if [ ! -s notes.md ]; then
+            echo "Only Shopify sync or release-note commits in this push; no release needed."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Title: "4 November 2026 — PR #5" when the push came from a pull request.
+          DATE_TITLE=$(TZ=Europe/Dublin date '+%-d %B %Y')
+          DATE_TAG=$(TZ=Europe/Dublin date '+%Y.%m.%d')
+          SHORT=$(git rev-parse --short "$AFTER")
+          PR=$(git log --merges --format='%s' "$RANGE" \
+                 | sed -n 's/^Merge pull request #\([0-9][0-9]*\).*/\1/p' | head -n 1)
+
+          if [ -n "$PR" ]; then
+            TITLE="$DATE_TITLE — PR #$PR"
+            printf '\n[Pull request #%s](%s/pull/%s)\n' "$PR" "$REPO_URL" "$PR" >> notes.md
+          else
+            TITLE="$DATE_TITLE — $SHORT"
+          fi
+
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "tag=v$DATE_TAG-$SHORT" >> "$GITHUB_OUTPUT"
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+          cat notes.md
+
+      - name: Publish the release
+        if: steps.notes.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.notes.outputs.tag }}
+          TITLE: ${{ steps.notes.outputs.title }}
+        run: |
+          gh release create "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "$TITLE" \
+            --notes-file notes.md \
+            --latest

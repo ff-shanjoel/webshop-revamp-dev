@@ -1,20 +1,18 @@
 # Release notes
 
-Changes to The Flooring Supply Centre theme, newest first. Work lands on `dev` first; when it is
-merged to `master` (by pull request), move its entry from **Unreleased** to **Released to `master`**
-under the merge date.
+> **From pull request #5 on, release notes are automatic.** Each merge to `master` creates a
+> GitHub Release (repo → **Releases**) listing the commit messages that came in. See
+> `.github/workflows/release.yml`. This file keeps the history up to pull request #4.
+>
+> To see what is on `dev` but not yet on `master`, use GitHub's **Compare** view: `master...dev`.
+
+Changes to The Flooring Supply Centre theme up to pull request #4, newest first.
 
 Based on [Dawn 16.0.0](https://github.com/Shopify/dawn/releases) by Shopify. Dawn's own release
 history lives on GitHub; it is not repeated here.
 
 > TFSG – MASTER is **not yet the published theme** — the live store still runs Fashionopolism.
 > "Released to `master`" means approved and synced to TFSG – MASTER, ready to publish.
-
----
-
-## Unreleased (on `dev`)
-
-_Nothing yet._
 
 ---
 
