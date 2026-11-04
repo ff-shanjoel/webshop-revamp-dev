@@ -1,8 +1,12 @@
 # Release notes
 
-Changes to The Flooring Supply Centre theme, newest first. Work lands on `dev` first; when it is
-merged to `master` (by pull request), move its entry from **Unreleased** to **Released to `master`**
-under the merge date.
+> **From pull request #5 on, release notes are automatic.** Each merge to `master` creates a
+> GitHub Release (repo → **Releases**) listing the commit messages that came in. See
+> `.github/workflows/release.yml`. This file keeps the history up to pull request #4.
+>
+> To see what is on `dev` but not yet on `master`, use GitHub's **Compare** view: `master...dev`.
+
+Changes to The Flooring Supply Centre theme up to pull request #4, newest first.
 
 Based on [Dawn 16.0.0](https://github.com/Shopify/dawn/releases) by Shopify. Dawn's own release
 history lives on GitHub; it is not repeated here.
@@ -12,26 +16,21 @@ history lives on GitHub; it is not repeated here.
 
 ---
 
-## Unreleased (on `dev`)
+## Released to `master`
 
-### Cart quantity loader
-- Changing a quantity on the cart page now shows a clear loading state on that row: a sliding
-  accent bar along the top, a tinted border, the row dimmed and a small spinner where the price
+### 4 November 2026 — pull request #4
+- **Cart quantity loader**: changing a quantity on the cart page shows a loading state on that
+  row — a sliding accent bar, a tinted border, the row dimmed and a small spinner where the price
   goes. With reduced motion on, the bar stays still.
-- Fixed on phones: the line total no longer overlaps the product name.
+- Fixed on phones: the cart line total no longer overlaps the product name.
+- **Cart popup polish**: the close button on the "Item added to your cart" popup is a round button
+  lined up with the heading (Dawn's negative margins pushed it into the corner); green tick in a
+  soft circle and a divider under the header.
 
-### Cart popup polish
-- Close button on the "Item added to your cart" popup is now a round button lined up with the
-  heading (Dawn's negative margins pushed it into the corner); green tick in a soft circle and a
-  divider under the header.
-
-### 4 November 2026
+### 4 November 2026 — pull request #3
 - README simplified into six numbered sections with fold-out references; the file reference is now
   grouped tables.
-
----
-
-## Released to `master`
+- Release notes reorganised into Unreleased and Released to `master`.
 
 ### 4 November 2026 — pull request #2
 - **Shop all** page (`/collections/all`) and a **Shop all** link in the header menu and phone menu.
