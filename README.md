@@ -182,50 +182,76 @@ soon as possible after) they leave:
 <details>
 <summary><strong>What each <code>fsg-</code> file does</strong> (click to open)</summary>
 
-```
-assets/
-  fsg-base.css            Shared styles, header, mega menu, search dropdown, footer, cart popup,
-                          long-form text, policy pages (loaded on every page)
-  fsg-sections.css        Homepage sections (loaded on every page)
-  fsg-pages.css           Product, collection, search, blog, article, page, contact, 404,
-                          password pages (loaded by those sections only)
-  fsg-cart.css            Cart page layout over Dawn's cart sections
-  fsg-theme.js            Sticky header, mega menu, mobile drawer, scroll reveal, FAQ, policy tidy-up
-  fsg-product.js          Product page: option steps → variant, gallery, delivery estimate, sticky bar
-  fsg-product-details.js  Turns free-typed product descriptions into facts / specs / feature lists
-  fsg-logo-dark.png       Header logo        fsg-logo-light.png   Footer logo (white)
-  fsg-favicon.png         Browser icon       fsg-apple-touch-icon.png  Phone home-screen icon
-layout/
-  theme.liquid            Dawn layout + small FSG hooks (tokens, CSS/JS, favicon)
-  fsg-password.liquid     Layout for the "coming soon" password page
-sections/
-  fsg-header / fsg-footer                 Header (mega menu, search) and footer
-  fsg-hero, fsg-collection-tiles,
-  fsg-featured-products, fsg-promo-cards,
-  fsg-help-band, fsg-range-banners,
-  fsg-sectors-strip, fsg-guides, fsg-faq  Homepage / reusable content sections
-  fsg-main-product, fsg-related-products  Product page
-  fsg-main-collection, fsg-list-collections  Collection page (incl. Shop all), "All categories"
-  fsg-main-search                         Search results
-  fsg-cart-steps, fsg-cart-assist         Cart page additions (steps, help box + cart styles)
-  fsg-main-blog, fsg-main-article         Blog listing and article
-  fsg-main-page, fsg-contact              Generic page, contact page
-  fsg-main-404, fsg-password              404 and coming-soon pages
-snippets/
-  fsg-tokens              Design tokens (CSS variables) from Theme settings → FSG design
-  fsg-icon                Line icon set
-  fsg-image               Image with "use a product photo" fallback + focal point
-  fsg-product-card        Product card with quick add
-  fsg-collection-tile, fsg-mega-tile, fsg-article-card   Tiles and cards
-  fsg-filter-sidebar      Collection page sidebar: categories + filters (slide-in panel on phones)
-  fsg-facets              Filter + sort bar on the search results page
-  fsg-favicon             Favicon / touch icon tags
-templates/
-  *.json                  Page templates using the fsg- sections
-  gift_card.liquid        Gift card page (standalone, redesigned)
-config/
-  settings_schema.json    Dawn settings + "FSG design" group (colours, radius, font)
-```
+<br>
+
+#### 🎨 Styles — `assets/`
+
+| File | What it styles | Loaded |
+|---|---|---|
+| `fsg-base.css` | Shared styles, header, mega menu, search dropdown, footer, cart popup, long-form text, policy pages | Every page |
+| `fsg-sections.css` | Homepage sections | Every page |
+| `fsg-pages.css` | Product, collection, search, blog, article, page, contact, 404 and password pages | Only by those sections |
+| `fsg-cart.css` | Cart page layout over Dawn's cart sections | Cart page |
+
+#### ⚙️ Scripts — `assets/`
+
+| File | What it does |
+|---|---|
+| `fsg-theme.js` | Sticky header, mega menu, mobile drawer, scroll reveal, FAQ, policy tidy-up |
+| `fsg-product.js` | Product page: option steps → variant, gallery, delivery estimate, sticky add bar |
+| `fsg-product-details.js` | Turns free-typed product descriptions into facts, specs and feature lists |
+
+#### 🖼️ Logos and icons — `assets/`
+
+| File | Used for |
+|---|---|
+| `fsg-logo-dark.png` | Header logo |
+| `fsg-logo-light.png` | Footer logo (white) |
+| `fsg-favicon.png` | Browser tab icon |
+| `fsg-apple-touch-icon.png` | Phone home-screen icon |
+
+#### 📐 Layouts — `layout/`
+
+| File | What it is |
+|---|---|
+| `theme.liquid` | Dawn's layout + small FSG hooks (tokens, CSS/JS, favicon) |
+| `fsg-password.liquid` | Layout for the "coming soon" password page |
+
+#### 🧩 Sections — `sections/`
+
+| Page | Sections |
+|---|---|
+| Every page | `fsg-header` (mega menu, search) · `fsg-footer` |
+| Homepage & reusable content | `fsg-hero` · `fsg-collection-tiles` · `fsg-featured-products` · `fsg-promo-cards` · `fsg-help-band` · `fsg-range-banners` · `fsg-sectors-strip` · `fsg-guides` · `fsg-faq` |
+| Product page | `fsg-main-product` · `fsg-related-products` |
+| Collection pages (incl. Shop all) | `fsg-main-collection` |
+| All categories | `fsg-list-collections` |
+| Search results | `fsg-main-search` |
+| Cart page | `fsg-cart-steps` · `fsg-cart-assist` (steps, help box + cart styles) |
+| Blog | `fsg-main-blog` (listing) · `fsg-main-article` (single article) |
+| Pages | `fsg-main-page` (general page) · `fsg-contact` (contact page) |
+| Special pages | `fsg-main-404` (page not found) · `fsg-password` (coming soon) |
+
+#### 🔁 Snippets — `snippets/`
+
+| File | What it is |
+|---|---|
+| `fsg-tokens` | Design tokens (CSS variables) from Theme settings → *FSG design* |
+| `fsg-icon` | Line icon set |
+| `fsg-image` | Image with "use a product photo" fallback and focal point |
+| `fsg-product-card` | Product card with quick add |
+| `fsg-collection-tile` · `fsg-mega-tile` · `fsg-article-card` | Tiles and cards |
+| `fsg-filter-sidebar` | Collection page sidebar: categories + filters (slide-in panel on phones) |
+| `fsg-facets` | Filter + sort bar on the search results page |
+| `fsg-favicon` | Favicon and touch-icon tags |
+
+#### 📄 Templates and settings
+
+| File | What it is |
+|---|---|
+| `templates/*.json` | Page templates that use the `fsg-` sections |
+| `templates/gift_card.liquid` | Gift card page (standalone, redesigned) |
+| `config/settings_schema.json` | Dawn's settings + the **FSG design** group (colours, radius, font) |
 
 </details>
 
