@@ -1345,7 +1345,35 @@ cart-notification .cart-notification-wrapper .cart-notification {
   font-family: var(--fsg-font);
 }
 cart-notification .cart-notification__header {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--fsg-line);
+}
+/* Close button: Dawn pulls it into the corner with negative margins; make it a neat round button */
+cart-notification .cart-notification__close.modal__close-button {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  border-radius: 50%;
+  background: var(--fsg-mist);
+  color: var(--fsg-ink-2);
+  transition: background-color 0.15s, color 0.15s;
+}
+cart-notification .cart-notification__close.modal__close-button:hover {
+  background: var(--fsg-mist-2);
+  color: var(--fsg-ink);
+}
+cart-notification .cart-notification__close .svg-wrapper,
+cart-notification .cart-notification__close .icon {
+  width: 13px;
+  height: 13px;
+}
+cart-notification .cart-notification__close:hover .icon {
+  transform: none;
 }
 cart-notification .cart-notification__heading {
   font-family: var(--fsg-font);
@@ -1356,6 +1384,23 @@ cart-notification .cart-notification__heading {
 }
 cart-notification .cart-notification__heading .svg-wrapper {
   color: #3a9a6c;
+}
+/* Green tick in a soft circle, lined up with the text */
+cart-notification .cart-notification__heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+cart-notification .cart-notification__heading .icon-checkmark {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 5px;
+  border-radius: 50%;
+  background: #e7f5ee;
+  color: #2f6b4f;
 }
 cart-notification .cart-notification-product {
   gap: 14px;

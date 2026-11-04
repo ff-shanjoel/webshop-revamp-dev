@@ -14,6 +14,11 @@ history lives on GitHub; it is not repeated here.
 
 ## Unreleased (on `dev`)
 
+### Cart popup polish
+- Close button on the "Item added to your cart" popup is now a round button lined up with the
+  heading (Dawn's negative margins pushed it into the corner); green tick in a soft circle and a
+  divider under the header.
+
 ### 4 November 2026
 - README simplified into six numbered sections with fold-out references; the file reference is now
   grouped tables.
