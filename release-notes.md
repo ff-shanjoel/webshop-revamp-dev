@@ -14,6 +14,12 @@ history lives on GitHub; it is not repeated here.
 
 ## Unreleased (on `dev`)
 
+### Cart quantity loader
+- Changing a quantity on the cart page now shows a clear loading state on that row: a sliding
+  accent bar along the top, a tinted border, the row dimmed and a small spinner where the price
+  goes. With reduced motion on, the bar stays still.
+- Fixed on phones: the line total no longer overlaps the product name.
+
 ### Cart popup polish
 - Close button on the "Item added to your cart" popup is now a round button lined up with the
   heading (Dawn's negative margins pushed it into the corner); green tick in a soft circle and a
