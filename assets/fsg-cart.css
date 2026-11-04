@@ -270,6 +270,69 @@ main[data-template='cart'] cart-remove-button .button::after {
   display: none;
 }
 
+/* Loading state while a quantity changes. Dawn's cart.js un-hides .loading__spinner in that
+   row; its own CSS positions the spinner for a table layout, so it is re-placed here. */
+main[data-template='cart'] .cart-item {
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+main[data-template='cart'] .cart-item__totals {
+  position: relative;
+  min-height: 24px;
+}
+main[data-template='cart'] .cart-item .loading__spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: auto;
+  padding: 0;
+}
+main[data-template='cart'] .cart-item .loading__spinner .spinner {
+  width: 22px;
+  height: 22px;
+}
+main[data-template='cart'] .cart-item .loading__spinner .path {
+  stroke: var(--fsg-slate);
+}
+main[data-template='cart'] .cart-item:has(.loading__spinner:not(.hidden)) {
+  border-color: color-mix(in srgb, var(--fsg-accent) 35%, var(--fsg-white));
+}
+main[data-template='cart'] .cart-item:has(.loading__spinner:not(.hidden)) :is(.cart-item__media, .cart-item__details, .cart-item__quantity) {
+  opacity: 0.55;
+  transition: opacity 0.2s;
+}
+/* Thin progress bar sweeping across the top of the row */
+main[data-template='cart'] .cart-item:has(.loading__spinner:not(.hidden))::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(90deg, transparent, var(--fsg-accent), transparent);
+  animation: fsg-cart-progress 1s linear infinite;
+}
+@keyframes fsg-cart-progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  main[data-template='cart'] .cart-item:has(.loading__spinner:not(.hidden))::after {
+    width: 100%;
+    animation: none;
+    background: var(--fsg-accent);
+    opacity: 0.4;
+  }
+}
+
 /* Empty cart (Dawn only shows .cart__warnings when the cart is empty) */
 main[data-template='cart'] cart-items.is-empty .cart__warnings {
   display: grid;
@@ -467,7 +530,8 @@ main[data-template='cart'] .cart__dynamic-checkout-buttons {
     align-self: start;
     justify-self: end;
   }
-  main[data-template='cart'] .cart-item__details {
+  /* Room for the line total, which sits top-right on phones (beats the .cart-item > td reset) */
+  main[data-template='cart'] .cart-item > td.cart-item__details {
     padding-right: 76px;
   }
 }
