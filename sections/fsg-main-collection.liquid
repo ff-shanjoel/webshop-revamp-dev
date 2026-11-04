@@ -4,6 +4,10 @@
   if s.show_delivery
     assign ship_text = s.ship_text
   endif
+  assign page_title = collection.title
+  if collection.url == s.all_link
+    assign page_title = s.all_title
+  endif
 
   # Category chips: find the menu item this collection sits under and show its siblings,
   # so shoppers can hop between ranges without going back to the menu.
@@ -42,15 +46,11 @@
         <a href="{{ chip_parent.url }}">{{ chip_parent.title | escape }}</a>
       {%- endif -%}
       {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
-      <span aria-current="page">{{ collection.title | escape }}</span>
+      <span aria-current="page">{{ page_title | escape }}</span>
     </nav>
 
     <header class="fsg-plp__head">
-      <h1 class="fsg-plp__title">{{ collection.title | escape }}</h1>
-      <p class="fsg-plp__count">
-        {{ collection.products_count }}
-        {% if collection.products_count == 1 %}product{% else %}products{% endif %}
-      </p>
+      <h1 class="fsg-plp__title">{{ page_title | escape }}</h1>
       {%- if collection.description != blank and s.show_description -%}
         <div class="fsg-rte fsg-plp__desc is-clamped" data-fsg-desc>{{ collection.description }}</div>
         <button type="button" class="fsg-plp__more" data-fsg-desc-toggle hidden>Read more</button>
@@ -79,7 +79,31 @@
       </nav>
     {%- endif -%}
 
-    {%- render 'fsg-facets', results: collection, action: collection.url -%}
+    <div class="fsg-plp__layout">
+      {%- render 'fsg-filter-sidebar', results: collection, menu: s.menu, all_url: s.all_link, all_label: s.all_title -%}
+
+      <div class="fsg-plp__main">
+        <div class="fsg-plp__bar">
+          <button type="button" class="fsg-btn fsg-btn--outline fsg-btn--sm fsg-plp__filters-btn" data-fsg-side-open>
+            {% render 'fsg-icon', icon: 'menu', size: 16 %}
+            Filters
+          </button>
+          <p class="fsg-plp__count">
+            {{ collection.products_count }}
+            {% if collection.products_count == 1 %}product{% else %}products{% endif %}
+          </p>
+          <label class="fsg-sort">
+            Sort by
+            <select name="sort_by" form="FsgFilterForm" data-fsg-sort>
+              {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected{% endif %}>
+                  {{- option.name | escape -}}
+                </option>
+              {%- endfor -%}
+            </select>
+          </label>
+        </div>
 
     {%- liquid
       assign has_active = false
@@ -147,6 +171,8 @@
         </div>
       {%- endif -%}
     {%- endpaginate -%}
+      </div>
+    </div>
   </div>
 </section>
 
@@ -190,9 +216,21 @@
     {
       "type": "link_list",
       "id": "menu",
-      "label": "Category chips menu",
+      "label": "Categories menu",
       "default": "main-menu",
-      "info": "Shows the other ranges from the same menu group as quick links."
+      "info": "Used for the Categories list in the sidebar and the quick links on phones."
+    },
+    {
+      "type": "text",
+      "id": "all_title",
+      "label": "All products heading",
+      "default": "Shop all"
+    },
+    {
+      "type": "text",
+      "id": "all_link",
+      "label": "All products page address",
+      "default": "/collections/all"
     },
     {
       "type": "header",

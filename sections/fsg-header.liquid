@@ -314,6 +314,19 @@
                 </div>
               {%- endif -%}
             </li>
+            {%- if forloop.first and section.settings.show_shop_all -%}
+              <li class="fsg-cats__item">
+                <a
+                  href="{{ section.settings.shop_all_link }}"
+                  class="fsg-cats__link fsg-cats__link--all"
+                  {% if request.path == section.settings.shop_all_link %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{- section.settings.shop_all_label | escape -}}
+                </a>
+              </li>
+            {%- endif -%}
           {%- endfor -%}
         </ul>
       </div>
@@ -368,6 +381,13 @@
                   <a href="{{ link.url }}" class="fsg-drawer__l1">{{ link.title | escape }}</a>
                 {%- endif -%}
               </li>
+              {%- if forloop.first and section.settings.show_shop_all -%}
+                <li>
+                  <a href="{{ section.settings.shop_all_link }}" class="fsg-drawer__l1">
+                    {{- section.settings.shop_all_label | escape -}}
+                  </a>
+                </li>
+              {%- endif -%}
             {%- endfor -%}
           </ul>
         {%- endif -%}
@@ -519,6 +539,25 @@
       "label": "Menu",
       "default": "main-menu",
       "info": "Level 1 = bar items, level 2 = column headings, level 3 = links."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shop_all",
+      "label": "Show Shop all link",
+      "info": "Added after the first menu item. Set in the theme, so your Shopify menu is unchanged.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shop_all_label",
+      "label": "Shop all label",
+      "default": "Shop all"
+    },
+    {
+      "type": "text",
+      "id": "shop_all_link",
+      "label": "Shop all page address",
+      "default": "/collections/all"
     },
     {
       "type": "text",

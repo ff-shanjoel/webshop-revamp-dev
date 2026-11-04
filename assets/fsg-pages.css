@@ -1970,3 +1970,281 @@ input:focus-visible + .fsg-pill {
     flex-direction: column;
   }
 }
+
+/* ==========================================================================
+   Collection layout with filter sidebar
+   ========================================================================== */
+.fsg-plp__layout {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.fsg-plp__main {
+  min-width: 0;
+}
+.fsg-plp__bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--fsg-line);
+}
+.fsg-plp__bar .fsg-plp__count {
+  margin-right: auto;
+  font-weight: 600;
+  color: var(--fsg-ink-2);
+}
+.fsg-plp__filters-btn {
+  display: none;
+}
+.fsg-plp__layout .fsg-plp__grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 20px;
+}
+
+/* Sidebar */
+.fsg-side {
+  position: sticky;
+  top: calc(var(--fsg-sticky-h, 60px) + 16px);
+  max-height: calc(100vh - var(--fsg-sticky-h, 60px) - 32px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  border: 1px solid var(--fsg-line);
+  border-radius: var(--fsg-radius-lg);
+  background: var(--fsg-white);
+}
+.fsg-side__top,
+.fsg-side__foot,
+.fsg-side__overlay {
+  display: none;
+}
+.fsg-side__group {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--fsg-line);
+}
+.fsg-side form > :last-child {
+  border-bottom: 0;
+}
+.fsg .fsg-side__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fsg-steel);
+  list-style: none;
+}
+.fsg-side__title::-webkit-details-marker {
+  display: none;
+}
+summary.fsg-side__title {
+  margin: 0;
+  cursor: pointer;
+}
+details[open] > summary.fsg-side__title {
+  margin-bottom: 8px;
+}
+details > summary .fsg-icon {
+  transition: transform 0.2s;
+}
+details[open] > summary .fsg-icon {
+  transform: rotate(180deg);
+}
+.fsg-side__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: calc(var(--fsg-radius) - 2px);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--fsg-ink-2);
+  transition: background-color 0.15s, color 0.15s;
+}
+.fsg-side__link small {
+  flex: none;
+  font-size: 12.5px;
+  color: var(--fsg-ink-3);
+}
+.fsg-side__link:hover {
+  background: var(--fsg-mist);
+  color: var(--fsg-slate);
+}
+.fsg-side__link.is-active {
+  background: color-mix(in srgb, var(--fsg-accent) 11%, var(--fsg-white));
+  font-weight: 700;
+  color: var(--fsg-slate);
+}
+.fsg-side__link--all {
+  margin: 0 -2px 2px;
+  font-weight: 700;
+  color: var(--fsg-ink);
+}
+.fsg-side__cat summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fsg-ink);
+  cursor: pointer;
+  list-style: none;
+}
+.fsg-side__cat summary::-webkit-details-marker {
+  display: none;
+}
+.fsg-side__cat summary .fsg-icon {
+  color: var(--fsg-ink-3);
+}
+.fsg-side__cat ul {
+  display: grid;
+  gap: 1px;
+  padding-bottom: 6px;
+}
+.fsg-side__opts {
+  display: grid;
+  gap: 2px;
+  margin: 0 -10px;
+}
+.fsg-side .fsg-filter__price {
+  padding: 0;
+}
+.fsg-side__active-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.fsg-side__active-head a {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fsg-slate);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.fsg-side .fsg-active {
+  padding-top: 0;
+}
+
+@media (min-width: 990px) {
+  /* The sidebar covers these on desktop */
+  .fsg-plp .fsg-chips {
+    display: none;
+  }
+}
+@media (max-width: 1199px) {
+  .fsg-plp__layout {
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 24px;
+  }
+  .fsg-plp__layout .fsg-plp__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 989px) {
+  .fsg-plp__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .fsg-plp__filters-btn {
+    display: inline-flex;
+  }
+  .fsg-plp__layout .fsg-plp__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  /* Slide-in panel */
+  .fsg-side {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 201;
+    display: flex;
+    flex-direction: column;
+    width: min(380px, 88vw);
+    max-height: none;
+    border: 0;
+    border-radius: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transform: translateX(-100%);
+    transition: transform 0.3s var(--fsg-ease), visibility 0s linear 0.3s;
+  }
+  .fsg-side.is-open {
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+  .fsg-side__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 14px 20px;
+    border-bottom: 1px solid var(--fsg-line);
+  }
+  .fsg-side__top strong {
+    font-size: 16px;
+    color: var(--fsg-ink);
+  }
+  .fsg-side__body {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .fsg-side__foot {
+    display: block;
+    padding: 12px 16px;
+    border-top: 1px solid var(--fsg-line);
+  }
+  .fsg-side__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: block;
+    background: rgba(22, 34, 47, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0s linear 0.3s;
+  }
+  .fsg-side__overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+}
+@media (max-width: 749px) {
+  .fsg-plp__layout .fsg-plp__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 14px;
+  }
+  /* Count on its own line; Filters and Sort share the row below */
+  .fsg-plp__bar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .fsg-plp__bar .fsg-plp__count {
+    order: -1;
+    flex: 1 0 100%;
+    margin: 0;
+    font-size: 13.5px;
+  }
+  .fsg-plp__filters-btn {
+    flex: 1 1 0;
+    min-height: 44px;
+  }
+  .fsg-plp__bar .fsg-sort {
+    flex: 1 1 0;
+    min-width: 0;
+    font-size: 0;
+  }
+  .fsg .fsg-plp__bar .fsg-sort select {
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+  }
+}

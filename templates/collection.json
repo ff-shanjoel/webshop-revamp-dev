@@ -10,7 +10,9 @@
         "show_vendor": true,
         "show_delivery": true,
         "ship_text": "Delivery in 2–3 working days",
-        "mto_tag": "Logo Mats"
+        "mto_tag": "Logo Mats",
+        "all_title": "Shop all",
+        "all_link": "/collections/all"
       }
     }
   },
