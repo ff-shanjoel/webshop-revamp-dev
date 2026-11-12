@@ -48,14 +48,15 @@
         "image_opacity": 55,
         "min_height": 440,
         "eyebrow": "Ireland's floor specialists",
-        "heading": "Entrance matting, trims and protection for every building.",
-        "text": "<p>Entrance matting, logo mats, trims and eco floor care — delivered across Ireland in 2–3 working days.</p>",
+        "heading": "Technical floor safety solutions for every building.",
+        "text": "<p>Mats, tactiles, ramps, trims, parking and protection products — for construction, healthcare, retail, logistics, offices, schools and public buildings.</p>",
         "button_label": "Shop entrance matting",
-        "button_link": "shopify://collections/secondary-textile-mats-for-recess",
+        "button_link": "shopify://collections/entrance-matting",
         "button_2_label": "Get a quote",
         "padding_top": 24,
         "padding_bottom": 48,
-        "image_position": "auto"
+        "image_position": "right",
+        "image": "shopify://shop_images/fsc-hero-entrance-steps-tactile-nosings.webp"
       }
     },
     "tiles": {
@@ -64,57 +65,73 @@
         "c1": {
           "type": "collection",
           "settings": {
-            "collection": "secondary-textile-mats-for-recess",
-            "title": "Recessed entrance mats"
+            "collection": "entrance-matting",
+            "title": "Entrance Matting",
+            "text": "Entrance, aluminium, modular, logo and rubber mats",
+            "image": "shopify://shop_images/fsc-entrance-matting-hotel-lobby.webp"
           }
         },
         "c2": {
           "type": "collection",
           "settings": {
-            "collection": "aluminium-mats-1",
-            "title": "Aluminium mats"
+            "collection": "tactiles-accessibility",
+            "title": "Tactiles & Accessibility",
+            "text": "Tactile studs and strips, access ramps",
+            "image": "shopify://shop_images/fsc-tactile-indicators-public-building.webp"
           }
         },
         "c3": {
           "type": "collection",
           "settings": {
-            "collection": "logo-mats",
-            "title": "Logo mats"
+            "collection": "trims",
+            "title": "Trims & Profiles",
+            "text": "Tile trims, stair nosings, thresholds, finishing profiles",
+            "image": "shopify://shop_images/fsc-tile-trims-bathroom.webp"
           }
         },
         "c4": {
           "type": "collection",
           "settings": {
-            "collection": "modular-mats",
-            "title": "Modular mats"
+            "collection": "movement-joints",
+            "title": "Movement Joints",
+            "text": "Expansion and floor joints, cover plates, retrofit joints",
+            "image": "shopify://shop_images/fsc-brass-floor-trims-terrazzo-lobby.webp"
           }
         },
         "c5": {
           "type": "collection",
           "settings": {
-            "collection": "trims",
-            "title": "Trims & profiles"
+            "collection": "wall-corner-protection",
+            "title": "Wall & Corner Protection",
+            "text": "Corner guards, wall guards, crash rails, impact protection",
+            "image": "shopify://shop_images/fsc-wall-protection-hospital-corridor.webp"
           }
         },
         "c6": {
           "type": "collection",
           "settings": {
-            "collection": "corner-guards",
-            "title": "Corner guards"
+            "collection": "car-park-site-safety",
+            "title": "Car Park & Site Safety",
+            "text": "Wheel stops, barriers, bollards, anti-slip and hazard tapes",
+            "image": "shopify://shop_images/fsc-wheel-stops-car-park.webp"
           }
         },
         "c7": {
           "type": "collection",
           "settings": {
-            "collection": "walls-guards",
-            "title": "Wall protection"
+            "collection": "floor-finishes",
+            "title": "Floor Finishes",
+            "text": "Commercial flooring",
+            "image": "shopify://shop_images/fsc-wood-effect-flooring-restaurant.webp"
           }
         },
         "c8": {
           "type": "collection",
           "settings": {
-            "collection": "anti-slip-treatments",
-            "title": "Anti-slip treatments"
+            "collection": "stock-clearance",
+            "title": "Stock Clearance",
+            "text": "Surplus stock, end-of-line products, special offers",
+            "image": "shopify://shop_images/fsc-warehouse-delivery-team.webp"
           }
         }
       },
@@ -166,7 +183,8 @@
         "fallback_product": "outdoor-aluminium-mat-pack-clean-brush-12mm",
         "fallback_photo": 7,
         "padding_top": 48,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "image": "shopify://shop_images/fsc-warehouse-delivery-team.webp"
       }
     },
     "promos": {

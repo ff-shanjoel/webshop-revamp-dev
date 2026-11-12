@@ -160,13 +160,17 @@
         {%- endif -%}
       {%- else -%}
         <div class="fsg-plp__empty">
-          <strong>No products found</strong>
           {%- if has_active -%}
+            <strong>No products found</strong>
             <p>Try removing a filter.</p>
             <a href="{{ collection.url }}" class="fsg-btn fsg-btn--primary">Clear filters</a>
           {%- else -%}
-            <p>This range is being restocked. Have a look at our other categories.</p>
-            <a href="{{ routes.collections_url }}" class="fsg-btn fsg-btn--primary">Browse all categories</a>
+            <strong>Coming soon online</strong>
+            <p>We supply this range already. Tell us what you need and we'll send a quote, usually the same day.</p>
+            <div class="fsg-plp__empty-actions">
+              <a href="/pages/contact" class="fsg-btn fsg-btn--primary">Ask for a quote</a>
+              <a href="{{ routes.collections_url }}" class="fsg-btn fsg-btn--outline">Browse all categories</a>
+            </div>
           {%- endif -%}
         </div>
       {%- endif -%}

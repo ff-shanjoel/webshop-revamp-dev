@@ -327,6 +327,19 @@
                 </a>
               </li>
             {%- endif -%}
+            {%- if forloop.first and section.settings.business_label != blank -%}
+              <li class="fsg-cats__item">
+                <a
+                  href="{{ section.settings.business_link }}"
+                  class="fsg-cats__link fsg-cats__link--all"
+                  {% if request.path == section.settings.business_link %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{- section.settings.business_label | escape -}}
+                </a>
+              </li>
+            {%- endif -%}
           {%- endfor -%}
         </ul>
       </div>
@@ -385,6 +398,13 @@
                 <li>
                   <a href="{{ section.settings.shop_all_link }}" class="fsg-drawer__l1">
                     {{- section.settings.shop_all_label | escape -}}
+                  </a>
+                </li>
+              {%- endif -%}
+              {%- if forloop.first and section.settings.business_label != blank -%}
+                <li>
+                  <a href="{{ section.settings.business_link }}" class="fsg-drawer__l1">
+                    {{- section.settings.business_label | escape -}}
                   </a>
                 </li>
               {%- endif -%}
@@ -558,6 +578,19 @@
       "id": "shop_all_link",
       "label": "Shop all page address",
       "default": "/collections/all"
+    },
+    {
+      "type": "text",
+      "id": "business_label",
+      "label": "Business type link label",
+      "info": "Shown after Shop all. Leave empty to hide.",
+      "default": "Shop by business"
+    },
+    {
+      "type": "text",
+      "id": "business_link",
+      "label": "Business type page address",
+      "default": "/pages/shop-by-business-type"
     },
     {
       "type": "text",

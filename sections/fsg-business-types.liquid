@@ -1,0 +1,142 @@
+{% comment %}
+  Shop by business type: one card per sector (photo, short text, links to the
+  categories that sector usually needs). Used on the page.business-types template.
+{% endcomment %}
+{%- assign s = section.settings -%}
+
+{{ 'fsg-pages.css' | asset_url | stylesheet_tag }}
+
+<section class="fsg fsg-sec fsg-biz"style="--fsg-pt: {{ s.padding_top }}px; --fsg-pb: {{ s.padding_bottom }}px;">
+  <div class="fsg-wrap">
+    <nav class="fsg-crumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      {% render 'fsg-icon', icon: 'chevron-right', size: 13 %}
+      <span aria-current="page">{{ page.title | default: s.heading | escape }}</span>
+    </nav>
+
+    <header class="fsg-biz__head">
+      {%- if s.eyebrow != blank -%}<p class="fsg-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+      <h1 class="fsg-biz__title">{{ page.title | default: s.heading | escape }}</h1>
+      {%- if page.content != blank -%}
+        <div class="fsg-biz__intro fsg-prose">{{ page.content }}</div>
+      {%- elsif s.intro != blank -%}
+        <div class="fsg-biz__intro">{{ s.intro }}</div>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 1 -%}
+        <nav class="fsg-biz__jump" aria-label="Business types">
+          {%- for block in section.blocks -%}
+            <a href="#{{ block.settings.title | handleize }}" class="fsg-chip">{{ block.settings.title }}</a>
+          {%- endfor -%}
+        </nav>
+      {%- endif -%}
+    </header>
+
+    <ul class="fsg-biz__grid" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <li class="fsg-biz__card fsg-rv" id="{{ b.title | handleize }}" {{ block.shopify_attributes }}>
+          <div class="fsg-biz__media">
+            {%- if b.image != blank -%}
+              {% render 'fsg-image', image: b.image, sizes: '(min-width: 990px) 600px, 100vw', alt: b.title %}
+            {%- else -%}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'fsg-placeholder' }}
+            {%- endif -%}
+          </div>
+          <div class="fsg-biz__body">
+            <h2 class="fsg-biz__name">{{ b.title }}</h2>
+            {%- if b.text != blank -%}<p class="fsg-biz__text">{{ b.text }}</p>{%- endif -%}
+            <p class="fsg-biz__label">Popular for {{ b.title | downcase }}</p>
+            <ul class="fsg-biz__links" role="list">
+              {%- for n in (1..4) -%}
+                {%- assign key = 'collection_' | append: n -%}
+                {%- assign c = b[key] -%}
+                {%- if c != blank -%}
+                  <li>
+                    <a href="{{ c.url }}" class="fsg-biz__link">
+                      <span>{{ c.title }}</span>
+                      {% render 'fsg-icon', icon: 'arrow-right', size: 15 %}
+                    </a>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FSG business types",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Shop by business type"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Products for your type of building",
+      "info": "Used when the section is not on a page; on a page the page title is the heading."
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro",
+      "info": "Used when the page itself has no content."
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "sector",
+      "name": "Business type",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Business type", "default": "Healthcare" },
+        { "type": "textarea", "id": "text", "label": "Short text" },
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "collection", "id": "collection_1", "label": "Category 1" },
+        { "type": "collection", "id": "collection_2", "label": "Category 2" },
+        { "type": "collection", "id": "collection_3", "label": "Category 3" },
+        { "type": "collection", "id": "collection_4", "label": "Category 4" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FSG business types",
+      "blocks": [{ "type": "sector" }, { "type": "sector" }]
+    }
+  ]
+}
+{% endschema %}

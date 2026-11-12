@@ -1,0 +1,126 @@
+{
+  "sections": {
+    "main": {
+      "type": "fsg-business-types",
+      "blocks": {
+        "s1": {
+          "type": "sector",
+          "settings": {
+            "title": "Construction",
+            "text": "Finishing profiles, movement joints and site safety products for contractors, delivered to site.",
+            "image": "shopify://shop_images/fsc-brass-floor-trims-terrazzo-lobby.webp",
+            "collection_1": "trims",
+            "collection_2": "movement-joints",
+            "collection_3": "car-park-site-safety",
+            "collection_4": "floor-finishes"
+          }
+        },
+        "s2": {
+          "type": "sector",
+          "settings": {
+            "title": "Healthcare",
+            "text": "Hygienic wall and corner protection, entrance matting and accessibility products for hospitals and clinics.",
+            "image": "shopify://shop_images/fsc-wall-protection-hospital-corridor.webp",
+            "collection_1": "wall-corner-protection",
+            "collection_2": "entrance-matting",
+            "collection_3": "tactiles-accessibility",
+            "collection_4": "floor-finishes"
+          }
+        },
+        "s3": {
+          "type": "sector",
+          "settings": {
+            "title": "Retail",
+            "text": "Entrance mats and logo mats that keep shop floors clean and safe, plus trims and finishes for fit-outs.",
+            "image": "shopify://shop_images/fsc-wood-effect-flooring-restaurant.webp",
+            "collection_1": "entrance-matting",
+            "collection_2": "floor-finishes",
+            "collection_3": "trims",
+            "collection_4": "wall-corner-protection"
+          }
+        },
+        "s4": {
+          "type": "sector",
+          "settings": {
+            "title": "Logistics",
+            "text": "Impact protection, anti-slip and hazard tapes, wheel stops and hard-wearing mats for warehouses and yards.",
+            "image": "shopify://shop_images/fsc-warehouse-delivery-team.webp",
+            "collection_1": "car-park-site-safety",
+            "collection_2": "wall-corner-protection",
+            "collection_3": "entrance-matting",
+            "collection_4": "movement-joints"
+          }
+        },
+        "s5": {
+          "type": "sector",
+          "settings": {
+            "title": "Offices",
+            "text": "Entrance matting for reception areas, plus trims, finishes and accessibility products.",
+            "image": "shopify://shop_images/fsc-entrance-matting-hotel-lobby.webp",
+            "collection_1": "entrance-matting",
+            "collection_2": "trims",
+            "collection_3": "floor-finishes",
+            "collection_4": "tactiles-accessibility"
+          }
+        },
+        "s6": {
+          "type": "sector",
+          "settings": {
+            "title": "Schools",
+            "text": "Durable entrance mats, wall and corner protection for busy corridors, and accessible, safe routes.",
+            "image": "shopify://shop_images/fsc-tile-trims-bathroom.webp",
+            "collection_1": "entrance-matting",
+            "collection_2": "wall-corner-protection",
+            "collection_3": "tactiles-accessibility",
+            "collection_4": "car-park-site-safety"
+          }
+        },
+        "s7": {
+          "type": "sector",
+          "settings": {
+            "title": "Public buildings",
+            "text": "Tactile paving and access ramps, entrance matting and movement joints for high-footfall spaces.",
+            "image": "shopify://shop_images/fsc-tactile-indicators-public-building.webp",
+            "collection_1": "tactiles-accessibility",
+            "collection_2": "entrance-matting",
+            "collection_3": "movement-joints",
+            "collection_4": "wall-corner-protection"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5",
+        "s6",
+        "s7"
+      ],
+      "settings": {
+        "eyebrow": "Shop by business type",
+        "heading": "Products for your type of building",
+        "intro": "<p>Pick your sector to see the categories our customers in that business use most. Not sure what you need? Talk to us for a quote.</p>",
+        "padding_top": 16,
+        "padding_bottom": 56
+      }
+    },
+    "help": {
+      "type": "fsg-help-band",
+      "settings": {
+        "eyebrow": "Free advice",
+        "heading": "Not sure what your building needs?",
+        "text": "<p>Send us your plans, a photo or your measurements and we will recommend the right products, usually the same day.</p>",
+        "phone": "(085) 1234 899",
+        "email": "info@facilityflooring.ie",
+        "image": "shopify://shop_images/fsc-warehouse-delivery-team.webp",
+        "padding_top": 8,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main",
+    "help"
+  ]
+}
