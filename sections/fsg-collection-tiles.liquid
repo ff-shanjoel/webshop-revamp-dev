@@ -49,8 +49,15 @@
             </span>
             <span class="fsg-tile__body">
               <span class="fsg-tile__title">{{ title | default: 'Collection' }}</span>
+              {%- if block.settings.text != blank -%}
+                <span class="fsg-tile__text">{{ block.settings.text }}</span>
+              {%- endif -%}
               {%- if s.show_count and c != blank -%}
-                <span class="fsg-tile__count">{{ c.products_count }} products</span>
+                {%- if c.products_count > 0 -%}
+                  <span class="fsg-tile__count">{{ c.products_count }} products</span>
+                {%- else -%}
+                  <span class="fsg-tile__count fsg-tile__count--soon">Coming soon · ask us</span>
+                {%- endif -%}
               {%- endif -%}
             </span>
             <span class="fsg-tile__arrow">{% render 'fsg-icon', icon: 'arrow-right', size: 16 %}</span>
@@ -153,6 +160,12 @@
           "type": "text",
           "id": "title",
           "label": "Title override"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Short description",
+          "info": "e.g. what the category includes. Optional."
         },
         {
           "type": "image_picker",

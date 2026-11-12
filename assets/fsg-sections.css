@@ -187,9 +187,20 @@
   line-height: 1.3;
   color: var(--fsg-ink);
 }
+.fsg-tile__text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--fsg-ink-2);
+  margin-top: 2px;
+}
 .fsg-tile__count {
   font-size: 13px;
   color: var(--fsg-ink-3);
+  margin-top: 4px;
+}
+.fsg-tile__count--soon {
+  color: var(--fsg-accent);
+  font-weight: 600;
 }
 .fsg-tile__arrow {
   position: absolute;

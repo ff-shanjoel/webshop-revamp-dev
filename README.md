@@ -135,8 +135,11 @@ These live in Shopify, not in this repository:
 | Main menu `main-menu` | Online Store → Navigation | Level 1 = category bar, level 2 = mega-menu tiles; a level 3 turns that dropdown into list + panel. Also feeds the collection sidebar. |
 | Footer menu `footer` | Online Store → Navigation | "Help" column in the footer |
 | Collections | Products → Collections | Tiles use the first product's photo; empty collections are hidden on *All categories*. Menu nesting does **not** combine collections — each has its own products. |
+| Homepage photos | Content → Files (`fsc-*.webp`, 1200×900) | Chosen in the templates: hero (`fsc-hero-entrance-steps-tactile-nosings.webp`, 1596×941, set to sit right so the text stays on the plain floor), one photo per category tile, help band, and the business-type page. To change a photo, use **Replace** on that file in Files (a new upload with the same name gets renamed), or pick another one in the theme editor. Without a photo, a spot falls back to a product photo. |
+| The 8 categories | Products → Collections | `entrance-matting` and `wall-corner-protection` fill **automatically** by product type; `car-park-site-safety` is picked by hand; Trims & Profiles uses the existing `trims`. `tactiles-accessibility`, `movement-joints`, `floor-finishes` and `stock-clearance` are empty until products are added: their tile says *Coming soon · ask us* and the page shows *Ask for a quote*. Not in `main-menu` yet (that menu is shared with the live theme). |
 | Shop all | Built in: `/collections/all` | Linked in the header ("Shop all", set in the theme's header settings) |
 | Contact page | Online Store → Pages | Handle `contact`, template **contact** |
+| Shop by business type | Online Store → Pages | Handle `shop-by-business-type`, template **business-types**. Linked in the header ("Shop by business", set in the header settings). Each business type and its categories is edited in the theme editor. |
 | Blog `news` | Online Store → Blog posts | Shown as "Guides & advice" |
 | Filters | Search & Discovery app → Filters | Availability and Price today; add Size, Color, Product type, Vendor and they appear automatically |
 | Product descriptions | Products | `Lead time: X–Y working days` sets the delivery estimate; bold labels (e.g. **MATERIAL**) with the value on the next line become the specifications card |
@@ -233,7 +236,7 @@ soon as possible after) they leave:
 | Search results | `fsg-main-search` |
 | Cart page | `fsg-cart-steps` · `fsg-cart-assist` (steps, help box + cart styles) |
 | Blog | `fsg-main-blog` (listing) · `fsg-main-article` (single article) |
-| Pages | `fsg-main-page` (general page) · `fsg-contact` (contact page) |
+| Pages | `fsg-main-page` (general page) · `fsg-contact` (contact page) · `fsg-business-types` (shop by business type) |
 | Special pages | `fsg-main-404` (page not found) · `fsg-password` (coming soon) |
 
 #### 🔁 Snippets — `snippets/`
