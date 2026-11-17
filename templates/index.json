@@ -169,7 +169,8 @@
         "link_label": "View all",
         "background": "mist",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "slider": true
       }
     },
     "help": {
@@ -177,14 +178,15 @@
       "settings": {
         "eyebrow": "Free advice",
         "heading": "Talk to someone who knows floors.",
-        "text": "<p>Not sure which mat, trim or treatment you need? Send us a photo or your measurements and we'll recommend the right product, usually the same day.</p>",
+        "text": "<p>Not sure which mat, trim or treatment you need? Tell us about the job and we will recommend the right product, usually the same day.</p>",
         "phone": "(085) 1234 899",
         "email": "info@facilityflooring.ie",
         "fallback_product": "outdoor-aluminium-mat-pack-clean-brush-12mm",
         "fallback_photo": 7,
         "padding_top": 48,
         "padding_bottom": 64,
-        "image": "shopify://shop_images/fsc-warehouse-delivery-team.webp"
+        "image": "shopify://shop_images/fsc-warehouse-delivery-team.webp",
+        "show_form": true
       }
     },
     "promos": {

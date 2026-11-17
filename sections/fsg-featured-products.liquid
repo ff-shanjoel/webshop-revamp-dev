@@ -18,10 +18,11 @@
       {%- endif -%}
     </div>
 
-    <ul class="fsg-featured__grid" role="list">
+    <ul class="fsg-featured__grid{% if s.slider %} fsg-featured__grid--slider{% endif %}" role="list"{% if s.slider %} data-fsg-slider-track tabindex="0" aria-label="{{ s.heading | escape }}"{% endif %}>
       {%- if s.collection != blank and s.collection.products_count > 0 -%}
         {%- for product in s.collection.products limit: s.limit -%}
-          <li class="fsg-rv" style="--fsg-rv-delay: {{ forloop.index0 | modulo: s.columns | times: 0.05 }}s">
+          {%- comment -%} No scroll fade-in inside the slider: items scrolled in sideways never trigger it. {%- endcomment -%}
+          <li{% unless s.slider %} class="fsg-rv" style="--fsg-rv-delay: {{ forloop.index0 | modulo: s.columns | times: 0.05 }}s"{% endunless %}>
             {% render 'fsg-product-card',
               card_product: product,
               section_id: section.id,
@@ -46,8 +47,77 @@
         {%- endfor -%}
       {%- endif -%}
     </ul>
+
+    {%- if s.slider -%}
+      <div class="fsg-slider-nav" data-fsg-slider-nav hidden>
+        <button type="button" class="fsg-slider-nav__btn" data-fsg-slider-prev aria-label="Previous products">
+          {% render 'fsg-icon', icon: 'chevron-left', size: 18 %}
+        </button>
+        <div class="fsg-slider-nav__dots" data-fsg-slider-dots></div>
+        <button type="button" class="fsg-slider-nav__btn" data-fsg-slider-next aria-label="Next products">
+          {% render 'fsg-icon', icon: 'chevron-right', size: 18 %}
+        </button>
+      </div>
+    {%- endif -%}
   </div>
 </section>
+
+{%- if s.slider -%}
+  <script>
+    (function () {
+      var root = document.currentScript.previousElementSibling;
+      var track = root.querySelector('[data-fsg-slider-track]');
+      var nav = root.querySelector('[data-fsg-slider-nav]');
+      if (!track || !nav) return;
+      var prev = nav.querySelector('[data-fsg-slider-prev]');
+      var next = nav.querySelector('[data-fsg-slider-next]');
+      var dotsWrap = nav.querySelector('[data-fsg-slider-dots]');
+      var pages = 0;
+
+      function pageCount() {
+        return Math.max(1, Math.round(track.scrollWidth / track.clientWidth));
+      }
+      function current() {
+        var max = track.scrollWidth - track.clientWidth;
+        if (max <= 0) return 0;
+        return Math.round((track.scrollLeft / max) * (pages - 1));
+      }
+      function go(i) {
+        var max = track.scrollWidth - track.clientWidth;
+        var target = pages > 1 ? (max / (pages - 1)) * i : 0;
+        track.scrollTo({ left: target, behavior: 'smooth' });
+      }
+      function build() {
+        pages = pageCount();
+        nav.hidden = pages < 2;
+        dotsWrap.innerHTML = '';
+        for (var i = 0; i < pages; i++) {
+          var d = document.createElement('button');
+          d.type = 'button';
+          d.className = 'fsg-slider-nav__dot';
+          d.setAttribute('aria-label', 'Page ' + (i + 1) + ' of ' + pages);
+          d.addEventListener('click', go.bind(null, i));
+          dotsWrap.appendChild(d);
+        }
+        update();
+      }
+      function update() {
+        var c = current();
+        prev.disabled = c <= 0;
+        next.disabled = c >= pages - 1;
+        Array.prototype.forEach.call(dotsWrap.children, function (d, i) {
+          d.setAttribute('aria-current', i === c ? 'true' : 'false');
+        });
+      }
+      prev.addEventListener('click', function () { go(Math.max(0, current() - 1)); });
+      next.addEventListener('click', function () { go(Math.min(pages - 1, current() + 1)); });
+      var t;
+      track.addEventListener('scroll', function () { clearTimeout(t); t = setTimeout(update, 60); }, { passive: true });
+      window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(build, 150); });
+      build();
+    })();
+  </script>
+{%- endif -%}
 
 {%- if s.collection != blank -%}
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
@@ -104,6 +174,13 @@
       "id": "show_vendor",
       "label": "Show vendor",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "slider",
+      "label": "Show one row with arrows",
+      "info": "Products scroll sideways with left/right arrows and page dots below.",
+      "default": false
     },
     {
       "type": "text",
