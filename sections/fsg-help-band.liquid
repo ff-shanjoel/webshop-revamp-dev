@@ -1,9 +1,10 @@
 {%- liquid
   assign s = section.settings
   assign phone_href = s.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+  assign form_id = 'FsgHelpForm-' | append: section.id
 -%}
 
-<section class="fsg fsg-sec fsg-help" style="--fsg-pt: {{ s.padding_top }}px; --fsg-pb: {{ s.padding_bottom }}px;">
+<section class="fsg fsg-sec fsg-help{% if s.show_form %} fsg-help--form{% endif %}" style="--fsg-pt: {{ s.padding_top }}px; --fsg-pb: {{ s.padding_bottom }}px;">
   <div class="fsg-wrap">
     <div class="fsg-help__band">
       <div class="fsg-help__body fsg-rv">
@@ -16,20 +17,65 @@
         {%- if s.text != blank -%}
           <div class="fsg-rte fsg-help__text">{{ s.text }}</div>
         {%- endif -%}
-        <div class="fsg-help__actions">
-          {%- if s.phone != blank -%}
-            <a href="tel:{{ phone_href }}" class="fsg-btn fsg-btn--light">
-              {% render 'fsg-icon', icon: 'phone', size: 18 %}
-              {{ s.phone }}
-            </a>
+        {%- if s.show_form -%}
+          {%- form 'contact', id: form_id, class: 'fsg-help__form' -%}
+            <input type="hidden" name="contact[source]" value="{{ s.form_source | escape }}">
+            {%- if form.posted_successfully? -%}
+              <div class="fsg-help__ok" role="status">
+                {% render 'fsg-icon', icon: 'check', size: 18 %}
+                <span>{{ s.success_text }}</span>
+              </div>
+            {%- else -%}
+              {%- if form.errors -%}
+                <div class="fsg-help__err" role="alert">{{ form.errors | default_errors }}</div>
+              {%- endif -%}
+              <div class="fsg-help__row">
+                <label class="fsg-help__field">
+                  <span>Name *</span>
+                  <input type="text" name="contact[name]" value="{{ form.name }}" autocomplete="name" required>
+                </label>
+                <label class="fsg-help__field">
+                  <span>Phone</span>
+                  <input type="tel" name="contact[phone]" value="{{ form.phone }}" autocomplete="tel">
+                </label>
+              </div>
+              <label class="fsg-help__field">
+                <span>Email *</span>
+                <input type="email" name="contact[email]" value="{{ form.email }}" autocomplete="email" required>
+              </label>
+              <label class="fsg-help__field">
+                <span>How can we help? *</span>
+                <textarea name="contact[body]" rows="3" required placeholder="{{ s.message_placeholder | escape }}">{{ form.body }}</textarea>
+              </label>
+              <button type="submit" class="fsg-btn fsg-btn--light fsg-help__submit">
+                {{- s.button_label }}
+                {% render 'fsg-icon', icon: 'arrow-right', size: 17 -%}
+              </button>
+            {%- endif -%}
+          {%- endform -%}
+          {%- if s.phone != blank or s.email != blank -%}
+            <p class="fsg-help__direct">
+              Prefer to talk?
+              {%- if s.phone != blank %} <a href="tel:{{ phone_href }}">{% render 'fsg-icon', icon: 'phone', size: 15 %}{{ s.phone }}</a>{% endif -%}
+              {%- if s.email != blank %} <a href="mailto:{{ s.email }}">{% render 'fsg-icon', icon: 'mail', size: 15 %}{{ s.email }}</a>{% endif -%}
+            </p>
           {%- endif -%}
-          {%- if s.email != blank -%}
-            <a href="mailto:{{ s.email }}" class="fsg-btn fsg-btn--ghost">
-              {% render 'fsg-icon', icon: 'mail', size: 18 %}
-              {{ s.email }}
-            </a>
-          {%- endif -%}
-        </div>
+        {%- else -%}
+          <div class="fsg-help__actions">
+            {%- if s.phone != blank -%}
+              <a href="tel:{{ phone_href }}" class="fsg-btn fsg-btn--light">
+                {% render 'fsg-icon', icon: 'phone', size: 18 %}
+                {{ s.phone }}
+              </a>
+            {%- endif -%}
+            {%- if s.email != blank -%}
+              <a href="mailto:{{ s.email }}" class="fsg-btn fsg-btn--ghost">
+                {% render 'fsg-icon', icon: 'mail', size: 18 %}
+                {{ s.email }}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       </div>
       <div class="fsg-help__media">
         {% render 'fsg-image',
@@ -65,6 +111,38 @@
       "id": "text",
       "label": "Text",
       "default": "<p>Not sure which mat, trim or treatment you need? Send us a photo or the measurements and we'll recommend the right product — usually the same day.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_form",
+      "label": "Show a contact form",
+      "info": "Replaces the phone and email buttons with a short form. Messages go to the store's sender email (Settings → Notifications). Phone and email still show as a small line under the form.",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Form button label",
+      "default": "Send message"
+    },
+    {
+      "type": "text",
+      "id": "message_placeholder",
+      "label": "Message placeholder",
+      "default": "e.g. entrance mat for a 2 m wide door, or a photo of the floor"
+    },
+    {
+      "type": "text",
+      "id": "success_text",
+      "label": "Thank-you message",
+      "default": "Thanks — we've got your message and will reply soon, usually the same day."
+    },
+    {
+      "type": "text",
+      "id": "form_source",
+      "label": "Form name in the email",
+      "info": "Shown in the email you receive, so you know where the message came from.",
+      "default": "Homepage advice box"
     },
     {
       "type": "text",

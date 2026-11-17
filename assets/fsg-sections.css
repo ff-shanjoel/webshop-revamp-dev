@@ -319,6 +319,87 @@
   grid-template-columns: repeat(var(--fsg-cols, 4), 1fr);
   gap: 16px;
 }
+
+/* One-row slider (setting "Show one row with arrows") */
+.fsg-featured__grid.fsg-featured__grid--slider {
+  --fsg-per-view: var(--fsg-cols, 4);
+  --fsg-gap: 16px;
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - (var(--fsg-per-view) - 1) * var(--fsg-gap)) / var(--fsg-per-view));
+  gap: var(--fsg-gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.fsg-featured__grid--slider::-webkit-scrollbar {
+  display: none;
+}
+.fsg-featured__grid--slider > li {
+  scroll-snap-align: start;
+}
+.fsg-slider-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 24px;
+}
+.fsg-slider-nav[hidden] {
+  display: none;
+}
+.fsg-slider-nav__btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--fsg-line);
+  border-radius: 50%;
+  background: var(--fsg-white);
+  color: var(--fsg-slate);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
+}
+.fsg-slider-nav__btn:hover:not(:disabled) {
+  border-color: var(--fsg-slate);
+  background: var(--fsg-slate);
+  color: var(--fsg-white);
+}
+.fsg-slider-nav__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.fsg-slider-nav__dots {
+  display: flex;
+  gap: 8px;
+}
+.fsg-slider-nav__dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--fsg-mist-2);
+  cursor: pointer;
+  transition: width 0.25s, background-color 0.25s;
+}
+.fsg-slider-nav__dot[aria-current='true'] {
+  width: 24px;
+  background: var(--fsg-slate);
+}
+@media (max-width: 989px) {
+  .fsg-featured__grid.fsg-featured__grid--slider {
+    --fsg-per-view: 3;
+  }
+}
+@media (max-width: 749px) {
+  .fsg-featured__grid.fsg-featured__grid--slider {
+    --fsg-per-view: 2;
+    --fsg-gap: 10px;
+  }
+}
 .fsg-card {
   position: relative;
   display: flex;
@@ -635,6 +716,122 @@
   .fsg-help__actions,
   .fsg-help__actions .fsg-btn {
     width: 100%;
+  }
+}
+
+/* Help band with a contact form ("Show a contact form") */
+.fsg-help--form .fsg-help__body {
+  gap: 14px;
+}
+.fsg-help--form .fsg-help__text {
+  font-size: 15.5px;
+}
+.fsg-help__form {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 520px;
+  margin-top: 4px;
+}
+.fsg-help__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.fsg-help__field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.fsg-help__field > span {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.75);
+}
+.fsg .fsg-help__field :is(input, textarea) {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--fsg-radius);
+  background: rgba(255, 255, 255, 0.08);
+  font-family: var(--fsg-font);
+  font-size: 15px;
+  letter-spacing: 0;
+  color: var(--fsg-white);
+  box-shadow: none;
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+.fsg .fsg-help__field textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+.fsg .fsg-help__field :is(input, textarea)::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+.fsg .fsg-help__field :is(input, textarea):focus {
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 4px rgba(169, 193, 219, 0.2);
+}
+.fsg-help__submit {
+  justify-self: start;
+  min-height: 50px;
+  padding-inline: 26px;
+}
+.fsg-help__ok,
+.fsg-help__err {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--fsg-radius);
+  font-size: 15px;
+  font-weight: 600;
+}
+.fsg-help__ok {
+  background: #e7f5ee;
+  color: #2f6b4f;
+}
+.fsg-help__err {
+  background: #fbeceb;
+  color: #9a2f27;
+}
+.fsg-help__direct {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+.fsg-help__direct a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--fsg-white);
+  text-decoration: none;
+}
+.fsg-help__direct a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 749px) {
+  .fsg-help--form .fsg-help__media {
+    min-height: 180px;
+  }
+  .fsg-help__row {
+    grid-template-columns: 1fr;
+  }
+  /* 16px stops iPhones zooming in when a field is tapped */
+  .fsg .fsg-help__field :is(input, textarea) {
+    font-size: 16px;
+  }
+  .fsg-help__submit {
+    justify-self: stretch;
   }
 }
 
