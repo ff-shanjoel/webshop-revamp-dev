@@ -12,6 +12,8 @@ and assets ("V8 Slate" design: muted slate blue, Manrope, clean and simple, few 
 - Work on **`dev`** → test on **TFSG – DEV** → merge to **`master`** → **TFSG – MASTER** (live once published).
 - Everything custom is prefixed **`fsg-`**; Dawn's own files are left as close to stock as possible.
 - Menus, collections, filters, pages and checkout branding are set in **Shopify admin**, not here.
+- Using Claude Code (or new to the project)? Read [`CLAUDE.md`](CLAUDE.md): the rules we follow, decisions
+  made with the client, and open items.
 
 1. [Start here](#1-start-here)
 2. [Making changes and going live](#2-making-changes-and-going-live)
@@ -282,7 +284,7 @@ or `master`.
 - A branch called **`dawn-upstream`** holds **only stock Dawn**. Git compares old Dawn, new Dawn and
   our theme (a three-way merge), so Dawn's changes apply everywhere **except** lines we also changed —
   those few are flagged as conflicts for a person to decide.
-- Project files (`README.md`, `LICENSE.md`, `release-notes.md`, `.github/`, `.gitignore`, `.theme-check.yml`,
+- Project files (`README.md`, `CLAUDE.md`, `LICENSE.md`, `release-notes.md`, `.github/`, `.gitignore`, `.theme-check.yml`,
   `.prettierrc.json`) are never touched, because only Dawn's theme folders are copied.
 
 ### Dawn files we changed — conflicts can only appear here
