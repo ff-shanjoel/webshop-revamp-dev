@@ -162,6 +162,9 @@ main[data-template='cart'] .cart-item__image {
 }
 main[data-template='cart'] .cart-item__details {
   grid-area: details;
+  /* Dawn fixes this cell at 35rem / 50rem for its table layout; in our grid it must shrink */
+  width: auto;
+  min-width: 0;
   display: grid;
   gap: 4px;
   font-size: 13.5px;
@@ -480,6 +483,21 @@ main[data-template='cart'] .cart__dynamic-checkout-buttons {
   border-top: 1px solid var(--fsg-line);
   font-weight: 600;
   color: var(--fsg-slate);
+}
+
+/* Small laptops: the 380px summary leaves little room, so quantity + total go under the name */
+@media (min-width: 990px) and (max-width: 1199px) {
+  main[data-template='cart'] .cart-item {
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    grid-template-areas:
+      'media details details'
+      'media qty total';
+    align-items: center;
+    row-gap: 12px;
+  }
+  main[data-template='cart'] .cart-item__details {
+    align-self: end;
+  }
 }
 
 /* ---------- Mobile ---------- */

@@ -83,6 +83,9 @@ user-facing source of truth — fix whichever is out of date.
   (4 hooks), `config/settings_schema.json` (FSG design group), header/footer section groups and the
   JSON templates. Dawn's `#cart-icon-bubble` markup and `product-form` quick add must keep working.
 - Mobile: form fields at least **16px** font (stops iPhone zoom); no horizontal page scroll at 375px.
+- Dawn's cart CSS gives cells fixed widths for its table layout (e.g. `.cart-item__details` 35rem /
+  50rem). Our cart is a grid, so override with `width: auto; min-width: 0`, and always test the cart
+  at ~1024px (summary column beside the items) as well as desktop and phone.
 
 ## 5. Shopify upload rules (theme check does not catch all of these)
 
