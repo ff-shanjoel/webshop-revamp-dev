@@ -5,7 +5,7 @@
       "settings": {
         "per_page": 24,
         "show_description": true,
-        "menu": "main-menu",
+        "menu": "shop-categories",
         "badge": "In stock",
         "show_vendor": true,
         "show_delivery": true,
