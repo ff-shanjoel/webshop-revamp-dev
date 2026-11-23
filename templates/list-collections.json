@@ -5,7 +5,7 @@
       "settings": {
         "title": "All categories",
         "text": "Pick a range to see every product, size and price.",
-        "menu": "main-menu",
+        "menu": "shop-categories",
         "show_others": true,
         "others_heading": "More categories",
         "hide_empty": true,

@@ -314,32 +314,6 @@
                 </div>
               {%- endif -%}
             </li>
-            {%- if forloop.first and section.settings.show_shop_all -%}
-              <li class="fsg-cats__item">
-                <a
-                  href="{{ section.settings.shop_all_link }}"
-                  class="fsg-cats__link"
-                  {% if request.path == section.settings.shop_all_link %}
-                    aria-current="page"
-                  {% endif %}
-                >
-                  {{- section.settings.shop_all_label | escape -}}
-                </a>
-              </li>
-            {%- endif -%}
-            {%- if forloop.first and section.settings.business_label != blank -%}
-              <li class="fsg-cats__item">
-                <a
-                  href="{{ section.settings.business_link }}"
-                  class="fsg-cats__link"
-                  {% if request.path == section.settings.business_link %}
-                    aria-current="page"
-                  {% endif %}
-                >
-                  {{- section.settings.business_label | escape -}}
-                </a>
-              </li>
-            {%- endif -%}
           {%- endfor -%}
         </ul>
       </div>
@@ -394,20 +368,6 @@
                   <a href="{{ link.url }}" class="fsg-drawer__l1">{{ link.title | escape }}</a>
                 {%- endif -%}
               </li>
-              {%- if forloop.first and section.settings.show_shop_all -%}
-                <li>
-                  <a href="{{ section.settings.shop_all_link }}" class="fsg-drawer__l1">
-                    {{- section.settings.shop_all_label | escape -}}
-                  </a>
-                </li>
-              {%- endif -%}
-              {%- if forloop.first and section.settings.business_label != blank -%}
-                <li>
-                  <a href="{{ section.settings.business_link }}" class="fsg-drawer__l1">
-                    {{- section.settings.business_label | escape -}}
-                  </a>
-                </li>
-              {%- endif -%}
             {%- endfor -%}
           </ul>
         {%- endif -%}
@@ -559,38 +519,6 @@
       "label": "Menu",
       "default": "main-menu",
       "info": "Level 1 = bar items, level 2 = column headings, level 3 = links."
-    },
-    {
-      "type": "checkbox",
-      "id": "show_shop_all",
-      "label": "Show Shop all link",
-      "info": "Added after the first menu item. Set in the theme, so your Shopify menu is unchanged.",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "shop_all_label",
-      "label": "Shop all label",
-      "default": "Shop all"
-    },
-    {
-      "type": "text",
-      "id": "shop_all_link",
-      "label": "Shop all page address",
-      "default": "/collections/all"
-    },
-    {
-      "type": "text",
-      "id": "business_label",
-      "label": "Business type link label",
-      "info": "Shown after Shop all. Leave empty to hide.",
-      "default": "Shop by business"
-    },
-    {
-      "type": "text",
-      "id": "business_link",
-      "label": "Business type page address",
-      "default": "/pages/shop-by-business-type"
     },
     {
       "type": "text",

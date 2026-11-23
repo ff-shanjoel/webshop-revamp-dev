@@ -15,15 +15,15 @@ user-facing source of truth — fix whichever is out of date.
   Chadwicks.ie / Pittman.ie-style clean layout.
 - Everything customer-facing is our own **`fsg-`** sections, snippets and assets. Dawn supplies the
   cart, checkout hand-off, predictive search and accessibility plumbing.
-- The **live store still runs the old Fashionopolism theme**. Our themes are unpublished drafts until
-  launch.
+- The new theme (`master` → TFSG – MASTER) is **live since 18 Nov 2026**; Fashionopolism is unpublished
+  and kept as a fallback.
 
 ## 2. Branches, themes and who does what
 
 | Branch | Shopify theme | Purpose |
 |---|---|---|
 | `dev` | **TFSG – DEV** | All work lands here first |
-| `master` | **TFSG – MASTER** | Approved work only, via pull request from `dev` (not published yet) |
+| `master` | **TFSG – MASTER** | Approved work only, via pull request from `dev` — **the live theme**: every merge goes live |
 | `dawn-upstream` | — | Stock Dawn only, used for three-way Dawn updates (README → "Updating Dawn") |
 
 - Both themes sync through the **Shopify GitHub integration**. A push syncs to the theme (usually
@@ -95,18 +95,20 @@ user-facing source of truth — fix whichever is out of date.
 - If a section file is rejected, every template using it is rejected too (symptom: DEV shows the old
   layout). Diagnose via Online Store → Themes → ⋯ → *Edit code* → paste the file → *Save*.
 
-## 6. The live store shares data with our themes — be careful
+## 6. Menus, collections and live data — be careful
 
-Products, **collections**, **menus**, pages, files and checkout settings are **shared by every theme**,
-including the live Fashionopolism theme.
+Products, **collections**, **menus**, pages, files and checkout settings are store data, shared by every
+theme. Changing them changes the **live site immediately** (no push needed), so ask first.
 
-- **`main-menu` is shared** → the "Shop all" and "Shop by business" header links are added by the theme
-  (header settings `show_shop_all`, `business_label`, `business_link`), not by the menu. At launch,
-  consider a separate menu for the new theme.
+- The new theme is **live** (published 18 Nov 2026); Fashionopolism is unpublished.
+- **All header links come from the `main-menu` menu** — never hard-code nav links in the theme.
+  `main-menu` = Home · Shop all · Shop by business · Shop Product Categories. Items removed from the
+  header are kept in the menu *Hidden from main menu (backup)* (Shopify menus have no hide option).
+- Category lists on pages (collection sidebar/chips, All categories, search, 404) use the
+  `shop-categories` menu: one group "Product categories" with the 8 client categories. These sections
+  only show menu items that have sub-links, so keep the group structure.
 - The 8 client categories were created as new collections and products were **added, not moved**
-  (old collections untouched). Tidy old collections only at launch, with the user's say-so.
-- Creating pages/collections makes them reachable by URL on the live store, but nothing on the live
-  theme links to them.
+  (old collections untouched). Tidy old collections only with the user's say-so.
 
 ## 7. Local preview and checks
 
@@ -165,7 +167,7 @@ The 8 categories (collection handles): `entrance-matting` (auto by type), `tacti
 "Coming soon · ask us" and the collection page offers a quote.
 
 Also: **Shop by business type** page `/pages/shop-by-business-type` (template `business-types`,
-section `fsg-business-types`), linked from the header.
+section `fsg-business-types`), linked from `main-menu`.
 
 **Rejected by the client — don't re-propose unless asked:** compact category tiles (small photo beside
 the name), and the "shortened" homepage (4 best sellers, 3-card promo row, hidden help band). The
@@ -178,8 +180,11 @@ Rollback point before these experiments: commit `540e7aa`.
 - **Product schema (structured data) is missing** from `fsg-main-product` (lost when replacing Dawn's
   product section) — user said "not now".
 - Contact page to be created in admin by the user; then link it wherever needed.
-- At launch: a new-theme main menu with the 8 categories; decide what to do with old collections;
-  remove COVID items from menus; flag €0-priced products.
+- Decide what to do with the old collections (and the hidden Shop 4EarthSolutions / Shop Facility
+  Flooring menu groups); COVID items are in those hidden groups; flag €0-priced products.
+- Test order **#1015** (18 Nov 2026, tagged "TEST ORDER - cancel") must be cancelled by hand in admin
+  — the connector blocks `orderCancel`.
+- Free-delivery rate is named "Over 200" but starts at €250 — confirm with the client.
 - Floor Finishes has sealers/coatings only — no actual flooring products yet.
 - Ask the client for the original entrance-mat lobby photo (current copy is 800×600).
 - SEO/CRO checklist lives in a Google Sheet ("Facility-Flooring-Revamp-SEO-CRO-Checklist", tab
